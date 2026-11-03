@@ -1,0 +1,21 @@
+old_url,new_url,status,reason
+http://thecofwo.org/*,https://thecofwo.org/*,301,Force https
+https://www.thecofwo.org/*,https://thecofwo.org/*,301,Single canonical host
+/about-us (no slash),/about-us/,301,Trailing-slash canonical (applies to all folder pages)
+/contact-us-2/,/contact-us/,301,Duplicate contact page
+/blog-standard/,/cofwo-blog/,301,Old blog layout of the same posts
+/blog-list/,/cofwo-blog/,301,Old blog layout of the same posts
+/author/the-cofwo/,/cofwo-blog/,301,Author archive = same posts as the blog
+/feed/,/feed.xml,301,WordPress RSS feed
+/category/faith-2/feed/,/feed.xml,301,Category RSS feed
+/[post-slug]/feed/,/[post-slug]/,301,WordPress per-post comment feeds
+/wp-sitemap.xml and /wp-sitemap-*.xml,/sitemap.xml,301,Old sitemap
+/sitemap_index.xml,/sitemap.xml,301,Common sitemap address
+/wp-content/uploads/2026/04/FB_IMG_*.jpg (any size),/assets/images/gallery/FB_IMG_*.jpg,301,Old gallery image addresses
+"/wp-content/uploads/2026/0[34]/(FB_IMG_*, swi-57*-scaled-1, slide-2cofwo, cofwopst, cofwopst2, midcrowd).jpg",/assets/images/<same name>.jpg,301,Old image addresses
+/wp-content/uploads/2026/04/Slider.jpeg,/assets/images/Slider.jpg,301,Hero image
+/wp-content/uploads/2026/03/about-second.webp,/assets/images/about-second.jpg,301,About image
+/wp-content/uploads/2026/0[34]/cofwo-logo*.png,/assets/images/<same name>.png,301,Logos
+"/typography/ /cart/ /checkout/ /my-account/ /wishlist-page/ /shop/ /online-conference/ /creative-conference/ /multi-event/ /online-tickets/ /gaming-comics/ /fashion-event/ /faqs/ /pricing/ /newsletter-popups/ /service-plus/ /food-festival/ /education-conference/ /music-conference/ /concert/ /art-event/ /what-we-offer/ /speakers/ /tickets-checkout/ /tickets-order/ /city-events/ /business-forum-2/",— (404 page shown),410,Theme demo pages – not COFWO content
+"/product/* /layouts/* /portfolio/* /services/* /team/* /event/* /events/* /testimonials_group/* /tribe_events_cat/* /events-category/*",— (404 page shown),410,Theme demo content
+/wp-admin /wp-login.php /wp-json /wp-includes,—,410,WordPress no longer exists

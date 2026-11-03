@@ -1,0 +1,5 @@
+# robots.txt for thecofwo.org
+User-agent: *
+Allow: /
+
+Sitemap: https://thecofwo.org/sitemap.xml

@@ -1,0 +1,31 @@
+existing_url,page_type,title,purpose,key_content,assets,forms,new_file_path,status
+/,home,THECOFWO – Seting Captives Free By The Spirit Of Prophecy,Homepage,"Hero slides; Who we are; Mission/Goal/Vision; ticker; The Gathering; testimonies; blog; newsletter",Slider.jpeg; swi-*.jpg; midcrowd.jpg; logos,Newsletter,/index.html,Rebuilt (demo schedule/team/pricing removed)
+/about-us/,page,About Us – THECOFWO,About the ministry,"About text; Mission/Goal/Vision; gallery",about-second.webp; cofwopst.jpg; 12 photos,Newsletter,/about-us/index.html,Rebuilt
+/contact-us/,page,Contact Us – THECOFWO,Contact,"Intro; contact form; email",none,Contact; Newsletter,/contact-us/index.html,Rebuilt (placeholder phone/address/map removed)
+/contact-us-2/,page (duplicate),Contact Us – THECOFWO,Duplicate of contact,Same as /contact-us/,none,Contact,—,301 → /contact-us/
+/cofwo-blog/,blog listing,THECOFWO,Blog index,3 posts,post images,Newsletter,/cofwo-blog/index.html,Rebuilt
+/its-your-time-to-shine/,post,It’s Your Time to Shine – THECOFWO,Blog post (28 Mar 2026),Full article,FB_IMG_1774529734333.jpg,Newsletter,/its-your-time-to-shine/index.html,Rebuilt
+/faith-vision-and-victory-living-a-victorious-christian-life/,post,"Faith, Vision, and Victory | Living a Victorious Christian Life – THECOFWO",Blog post (28 Mar 2026),Full article,FB_IMG_1774529494834.jpg,Newsletter,/faith-vision-and-victory-living-a-victorious-christian-life/index.html,Rebuilt
+/understanding-gods-purpose-for-your-life-a-guide-to-divine-direction/,post,Understanding God’s Purpose for Your Life | A Guide to Divine Direction – THECOFWO,Blog post (28 Mar 2026),Full article,FB_IMG_1774529708748.jpg,Newsletter,/understanding-gods-purpose-for-your-life-a-guide-to-divine-direction/index.html,Rebuilt
+/category/faith-2/,category archive,Faith – THECOFWO,Category listing,3 posts,post images,Newsletter,/category/faith-2/index.html,Rebuilt
+/author/the-cofwo/,author archive,THE COFWO – THECOFWO,Author listing,3 posts (same as blog),—,—,—,301 → /cofwo-blog/
+/gallery/,gallery,Gallery – THECOFWO,Photo gallery,"~60 photos",46 FB_IMG + 5 event photos,Newsletter,/gallery/index.html,Rebuilt (AI-generated and theme images excluded)
+/give/,page,Give – THECOFWO,Giving,EMPTY on old site,none,—,/give/index.html,Rebuilt with honest "contact us to give" notice – needs giving method
+/privacy-policy/,legal,Privacy Policy – THECOFWO,Privacy,AncoraThemes' own policy (not COFWO's),none,—,/privacy-policy/index.html,Replaced with a new draft – needs review
+/blog-standard/,demo blog template,—,Theme demo,Same posts in another layout,—,—,—,301 → /cofwo-blog/
+/blog-list/,demo blog template,—,Theme demo,Same posts in another layout,—,—,—,301 → /cofwo-blog/
+/faqs/,demo page,FAQs – THECOFWO,Theme demo,Lorem ipsum (verified),—,—,—,410 Gone
+/what-we-offer/,demo page (unverified),What We Offer – THECOFWO,Theme demo (assumed),Not opened,—,—,—,410 Gone – confirm
+/speakers/,demo page,Speakers – THECOFWO,Theme demo,Fake speakers,—,—,—,410 Gone
+/pricing/,demo page,Pricing,Theme demo,Ticket prices,—,—,—,410 Gone
+"/typography/, /cart/, /checkout/, /my-account/, /wishlist-page/, /shop/, /online-conference/, /creative-conference/, /multi-event/, /online-tickets/, /gaming-comics/, /fashion-event/, /newsletter-popups/, /service-plus/, /food-festival/, /education-conference/, /music-conference/, /concert/, /art-event/, /tickets-checkout/, /tickets-order/, /city-events/, /business-forum-2/",demo pages,various,Theme demo / WooCommerce,Not COFWO content,—,—,—,410 Gone
+/product/* (8),WooCommerce demo products,various,Theme demo,Hoodies/caps,—,—,—,410 Gone
+/layouts/* (34),theme layout fragments,various,Theme internals,Headers/footers/popups,—,—,—,410 Gone
+/portfolio/* (24),demo portfolio,various,Theme demo,—,—,—,—,410 Gone
+/services/* (14),demo services,various,Theme demo,—,—,—,—,410 Gone
+/team/* (23),demo team,various,Theme demo (fake people),—,—,—,—,410 Gone
+/event/*,demo events,various,Theme demo,Business conferences,—,—,—,410 Gone
+/testimonials_group/* (5),demo taxonomy,various,Theme demo,—,—,—,—,410 Gone
+(new) /thank-you/,utility,Thank you – THECOFWO,Form landing page when JavaScript is off,—,—,—,/thank-you/index.html,New (noindex)
+(new) /404.html,utility,Page not found – THECOFWO,Not-found page,—,—,—,/404.html,New
+(new) /feed.xml,RSS,The COFWO Blog,Replaces WordPress /feed/,3 posts,—,—,/feed.xml,New
