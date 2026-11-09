@@ -53,7 +53,7 @@ export function ContactForm({ subjects = [], successMessage }: Props) {
 
   if (state.ok) {
     return (
-      <div role="status" className="rounded-[var(--radius-xl)] border border-line bg-ink-2 p-8">
+      <div role="status" className="card p-8">
         <CheckCircle size={40} weight="fill" className="text-fire-soft" aria-hidden />
         <h3 className="mt-4 text-2xl font-semibold">Message sent</h3>
         <p className="mt-2 text-muted">{successMessage || 'Thank you. We will be in touch soon.'}</p>

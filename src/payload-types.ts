@@ -13,53 +13,16 @@
  * via the `definition` "supportedTimezones".
  */
 export type SupportedTimezones =
-  | 'Pacific/Midway'
-  | 'Pacific/Niue'
-  | 'Pacific/Honolulu'
-  | 'Pacific/Rarotonga'
-  | 'America/Anchorage'
-  | 'Pacific/Gambier'
-  | 'America/Los_Angeles'
-  | 'America/Tijuana'
-  | 'America/Denver'
-  | 'America/Phoenix'
-  | 'America/Chicago'
-  | 'America/Guatemala'
-  | 'America/New_York'
-  | 'America/Bogota'
-  | 'America/Caracas'
-  | 'America/Santiago'
-  | 'America/Buenos_Aires'
-  | 'America/Sao_Paulo'
-  | 'Atlantic/South_Georgia'
-  | 'Atlantic/Azores'
-  | 'Atlantic/Cape_Verde'
+  | 'Africa/Lagos'
+  | 'Africa/Accra'
+  | 'Africa/Nairobi'
+  | 'Africa/Johannesburg'
   | 'Europe/London'
   | 'Europe/Berlin'
-  | 'Africa/Lagos'
-  | 'Europe/Athens'
-  | 'Africa/Cairo'
-  | 'Europe/Moscow'
-  | 'Asia/Riyadh'
-  | 'Asia/Dubai'
-  | 'Asia/Baku'
-  | 'Asia/Karachi'
-  | 'Asia/Tashkent'
-  | 'Asia/Calcutta'
-  | 'Asia/Dhaka'
-  | 'Asia/Almaty'
-  | 'Asia/Jakarta'
-  | 'Asia/Bangkok'
-  | 'Asia/Shanghai'
-  | 'Asia/Singapore'
-  | 'Asia/Tokyo'
-  | 'Asia/Seoul'
-  | 'Australia/Brisbane'
-  | 'Australia/Sydney'
-  | 'Pacific/Guam'
-  | 'Pacific/Noumea'
-  | 'Pacific/Auckland'
-  | 'Pacific/Fiji';
+  | 'America/New_York'
+  | 'America/Chicago'
+  | 'America/Los_Angeles'
+  | 'UTC';
 
 export interface Config {
   auth: {
@@ -70,6 +33,7 @@ export interface Config {
     posts: Post;
     categories: Category;
     pages: Page;
+    sermons: Sermon;
     events: Event;
     testimonies: Testimony;
     albums: Album;
@@ -90,6 +54,7 @@ export interface Config {
     posts: PostsSelect<false> | PostsSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
+    sermons: SermonsSelect<false> | SermonsSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
     testimonies: TestimoniesSelect<false> | TestimoniesSelect<true>;
     albums: AlbumsSelect<false> | AlbumsSelect<true>;
@@ -328,6 +293,66 @@ export interface Page {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * Messages people can watch or listen to on the Sermons page. Paste a YouTube, Facebook or Vimeo link; the video plays on the website.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sermons".
+ */
+export interface Sermon {
+  id: number;
+  title: string;
+  speaker?: string | null;
+  date: string;
+  /**
+   * A YouTube, Facebook or Vimeo address, e.g. https://www.youtube.com/watch?v=...
+   */
+  videoUrl?: string | null;
+  /**
+   * A direct link to an MP3, if you have one.
+   */
+  audioUrl?: string | null;
+  series?: string | null;
+  scripture?: string | null;
+  /**
+   * Optional. YouTube videos use their own thumbnail when this is empty.
+   */
+  thumbnail?: (number | null) | Media;
+  /**
+   * One or two sentences about the message.
+   */
+  summary?: string | null;
+  notes?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * The last part of the page address. Leave empty to create it from the title.
+   */
+  slug?: string | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
  * Services, conferences and gatherings. Upcoming events appear on the homepage and the Events page.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -337,7 +362,9 @@ export interface Event {
   id: number;
   title: string;
   startDate: string;
+  startDate_tz: SupportedTimezones;
   endDate?: string | null;
+  endDate_tz?: SupportedTimezones;
   location?: string | null;
   format?: ('in-person' | 'online' | 'hybrid') | null;
   /**
@@ -700,6 +727,10 @@ export interface PayloadLockedDocument {
         value: number | Page;
       } | null)
     | ({
+        relationTo: 'sermons';
+        value: number | Sermon;
+      } | null)
+    | ({
         relationTo: 'events';
         value: number | Event;
       } | null)
@@ -830,12 +861,41 @@ export interface PagesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sermons_select".
+ */
+export interface SermonsSelect<T extends boolean = true> {
+  title?: T;
+  speaker?: T;
+  date?: T;
+  videoUrl?: T;
+  audioUrl?: T;
+  series?: T;
+  scripture?: T;
+  thumbnail?: T;
+  summary?: T;
+  notes?: T;
+  slug?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "events_select".
  */
 export interface EventsSelect<T extends boolean = true> {
   title?: T;
   startDate?: T;
+  startDate_tz?: T;
   endDate?: T;
+  endDate_tz?: T;
   location?: T;
   format?: T;
   summary?: T;
@@ -1225,6 +1285,9 @@ export interface HomePage {
       };
       [k: string]: unknown;
     } | null;
+    /**
+     * Three photos. Landscape photos at least 1600px wide look best.
+     */
     images?: (number | Media)[] | null;
     link?: {
       label?: string | null;
@@ -1234,6 +1297,25 @@ export interface HomePage {
       url?: string | null;
       newTab?: boolean | null;
     };
+  };
+  visit?: {
+    eyebrow?: string | null;
+    heading?: string | null;
+    body?: string | null;
+    image?: (number | null) | Media;
+    link?: {
+      label?: string | null;
+      /**
+       * A page on this site such as /about-us, or a full web address.
+       */
+      url?: string | null;
+      newTab?: boolean | null;
+    };
+  };
+  sermonsSection?: {
+    eyebrow?: string | null;
+    heading?: string | null;
+    show?: boolean | null;
   };
   testimoniesSection?: {
     eyebrow?: string | null;
@@ -1531,7 +1613,7 @@ export interface SiteSetting {
    */
   phone?: string | null;
   /**
-   * Leave empty to hide.
+   * Venue name and address. Shown on the homepage, Contact page and footer. Leave empty to hide.
    */
   address?: string | null;
   /**
@@ -1539,7 +1621,7 @@ export interface SiteSetting {
    */
   mapUrl?: string | null;
   /**
-   * Shown in the footer and on the Contact page. Leave empty to hide.
+   * Shown on the homepage, the Contact page and the footer. Leave empty to hide.
    */
   serviceTimes?:
     | {
@@ -1549,6 +1631,14 @@ export interface SiteSetting {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Where services are streamed live (YouTube channel live page, Facebook page, etc.).
+   */
+  livestreamUrl?: string | null;
+  /**
+   * Your YouTube channel or Facebook videos page, for older messages.
+   */
+  videoChannelUrl?: string | null;
   socials?:
     | {
         platform: 'facebook' | 'instagram' | 'youtube' | 'x' | 'tiktok' | 'whatsapp' | 'telegram' | 'linkedin';
@@ -1707,6 +1797,28 @@ export interface HomePageSelect<T extends boolean = true> {
               url?: T;
               newTab?: T;
             };
+      };
+  visit?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        body?: T;
+        image?: T;
+        link?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              newTab?: T;
+            };
+      };
+  sermonsSection?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        show?: T;
       };
   testimoniesSection?:
     | T
@@ -1959,6 +2071,8 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         time?: T;
         id?: T;
       };
+  livestreamUrl?: T;
+  videoChannelUrl?: T;
   socials?:
     | T
     | {
@@ -2060,6 +2174,7 @@ export interface TaskCreateCollectionExport {
       | 'posts'
       | 'categories'
       | 'pages'
+      | 'sermons'
       | 'events'
       | 'testimonies'
       | 'albums'

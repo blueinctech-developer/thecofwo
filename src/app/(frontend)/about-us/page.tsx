@@ -44,7 +44,7 @@ export default async function AboutPage() {
       {/* Passion: full-width photo band with overlaid statement */}
       {p.passion?.heading && (
         <section className="container-x">
-          <div className="relative isolate overflow-hidden rounded-[28px]">
+          <div className="theme-dark relative isolate overflow-hidden rounded-[28px] bg-ink">
             <Media media={p.passion.image} sizes="100vw" className="absolute inset-0 -z-20 h-full w-full object-cover" />
             <div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(0deg,rgb(15_13_14/0.95)_0%,rgb(15_13_14/0.6)_55%,rgb(15_13_14/0.3)_100%)]" />
             <div className="max-w-3xl px-6 pb-14 pt-56 md:px-14 md:pb-20 md:pt-80" data-reveal>
@@ -71,7 +71,7 @@ export default async function AboutPage() {
           </h2>
           <div className="mt-12 grid gap-x-10 gap-y-12 md:grid-cols-2">
             {p.beliefs.map((b, i) => (
-              <div key={b.id ?? i} className="border-t border-line-strong pt-6" data-reveal style={{ '--d': i % 2 } as React.CSSProperties}>
+              <div key={b.id ?? i} className="border-t-2 border-fire pt-6" data-reveal style={{ '--d': i % 2 } as React.CSSProperties}>
                 <h3 className="text-xl font-semibold">{b.title}</h3>
                 {b.body && <p className="mt-3 text-muted">{b.body}</p>}
               </div>

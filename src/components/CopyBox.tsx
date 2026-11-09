@@ -7,7 +7,7 @@ import { useState } from 'react'
 export function CopyBox({ text }: { text: string }) {
   const [copied, setCopied] = useState(false)
   return (
-    <div className="relative mt-5 rounded-xl border border-line bg-ink p-4 pr-14">
+    <div className="relative mt-5 rounded-xl border border-line bg-ink-2 p-4 pr-14">
       <pre className="whitespace-pre-wrap font-sans text-[0.95rem] leading-relaxed text-fg">{text}</pre>
       <button
         type="button"

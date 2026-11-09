@@ -58,13 +58,18 @@ export const SiteSettings: GlobalConfig = {
                 { name: 'phone', type: 'text', admin: { width: '50%', description: 'Leave empty to hide.' } },
               ],
             },
-            { name: 'address', type: 'textarea', admin: { description: 'Leave empty to hide.' } },
+            {
+              name: 'address',
+              type: 'textarea',
+              label: 'Where we meet',
+              admin: { description: 'Venue name and address. Shown on the homepage, Contact page and footer. Leave empty to hide.' },
+            },
             { name: 'mapUrl', type: 'text', label: 'Map link', admin: { description: 'A Google Maps link (optional).' } },
             {
               name: 'serviceTimes',
               type: 'array',
               label: 'Service times',
-              admin: { description: 'Shown in the footer and on the Contact page. Leave empty to hide.' },
+              admin: { description: 'Shown on the homepage, the Contact page and the footer. Leave empty to hide.' },
               fields: [
                 {
                   type: 'row',
@@ -75,6 +80,24 @@ export const SiteSettings: GlobalConfig = {
                   ],
                 },
               ],
+            },
+          ],
+        },
+        {
+          label: 'Watch online',
+          description: 'Links for people who join online.',
+          fields: [
+            {
+              name: 'livestreamUrl',
+              type: 'text',
+              label: 'Livestream link',
+              admin: { description: 'Where services are streamed live (YouTube channel live page, Facebook page, etc.).' },
+            },
+            {
+              name: 'videoChannelUrl',
+              type: 'text',
+              label: 'Video channel link',
+              admin: { description: 'Your YouTube channel or Facebook videos page, for older messages.' },
             },
           ],
         },

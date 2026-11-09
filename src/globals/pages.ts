@@ -115,7 +115,25 @@ export const HomePage = pageGlobal('home-page', 'Homepage', 'The sections of the
         fields: [
           section('gathering', 'Annual event', [
             { name: 'body', type: 'richText' },
-            { name: 'images', type: 'upload', relationTo: 'media', hasMany: true, maxRows: 4 },
+            {
+              name: 'images',
+              type: 'upload',
+              relationTo: 'media',
+              hasMany: true,
+              maxRows: 3,
+              admin: { description: 'Three photos. Landscape photos at least 1600px wide look best.' },
+            },
+            linkGroup('link', 'Button'),
+          ]),
+        ],
+      },
+      {
+        label: 'Join us',
+        description: 'Service times and the address come from Site settings → Contact & services.',
+        fields: [
+          section('visit', 'Join us', [
+            { name: 'body', type: 'textarea' },
+            { name: 'image', type: 'upload', relationTo: 'media' },
             linkGroup('link', 'Button'),
           ]),
         ],
@@ -123,6 +141,14 @@ export const HomePage = pageGlobal('home-page', 'Homepage', 'The sections of the
       {
         label: 'Other sections',
         fields: [
+          section('sermonsSection', 'Latest message', [
+            {
+              name: 'show',
+              type: 'checkbox',
+              defaultValue: true,
+              label: 'Show this section (when a sermon or livestream link exists)',
+            },
+          ]),
           section('testimoniesSection', 'Testimonies', [
             { name: 'show', type: 'checkbox', defaultValue: true, label: 'Show this section' },
           ]),

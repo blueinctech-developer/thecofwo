@@ -17,13 +17,13 @@ The previous static site is kept in [`legacy/`](legacy/) for reference. The seed
 | Homepage, About, Give and Contact page text and photos | Website pages |
 | Extra pages (privacy policy, etc.) | Website pages → Other pages |
 | Blog posts (drafts, publishing, categories) | Blog |
-| Events, testimonies, gallery albums | Ministry |
+| Sermons (YouTube/Facebook/Vimeo), events, testimonies, gallery albums | Ministry |
 | Contact messages and newsletter subscribers (with CSV export) | Inbox |
-| Contact details, social links, mission and vision, announcement bar, SEO defaults, footer | Settings → Site settings |
+| Service times, address, livestream links, social links, mission and vision, announcement bar, SEO defaults, footer | Settings → Site settings |
 | Top menu and footer links | Settings → Menus |
 | Who can sign in (admins and editors) | Admin → Team members |
 
-Saving in the admin updates the live site straight away. Editors can **Preview** drafts on the real site before publishing.
+A **Before launch** checklist on the dashboard shows which ministry details are still missing. Saving in the admin updates the live site straight away. Editors can **Preview** drafts on the real site before publishing.
 
 ## Run it locally
 

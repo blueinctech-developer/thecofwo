@@ -9,14 +9,17 @@ import { useEffect, useRef, useState } from 'react'
 type NavLink = { label: string; url: string; newTab?: boolean | null }
 
 type Props = {
+  /** White logo, shown over the dark photo band at the top of every page */
   logo: string
+  /** Colour logo, shown once the header turns solid */
+  logoOnLight: string
   siteName: string
   links: NavLink[]
   cta?: NavLink | null
   announcement?: { text: string; link?: NavLink | null } | null
 }
 
-export function Header({ logo, siteName, links, cta, announcement }: Props) {
+export function Header({ logo, logoOnLight, siteName, links, cta, announcement }: Props) {
   const [open, setOpen] = useState(false)
   const [solid, setSolid] = useState(false)
   const sentinel = useRef<HTMLDivElement>(null)
@@ -39,6 +42,7 @@ export function Header({ logo, siteName, links, cta, announcement }: Props) {
   }, [open])
 
   const isActive = (url: string) => url !== '/' && pathname?.startsWith(url)
+  const light = solid || open
 
   return (
     <>
@@ -67,15 +71,21 @@ export function Header({ logo, siteName, links, cta, announcement }: Props) {
           </div>
         )}
         <div
-          className={`transition-[background-color,border-color,backdrop-filter] duration-500 ${
-            solid || open
-              ? 'border-b border-line bg-ink/85 backdrop-blur-xl'
-              : 'border-b border-transparent bg-gradient-to-b from-ink/70 to-transparent'
+          className={`transition-[background-color,border-color,box-shadow] duration-500 ${
+            light
+              ? 'border-b border-line bg-ink/90 shadow-[0_6px_24px_-16px_rgb(24_24_27/0.35)] backdrop-blur-xl'
+              : 'theme-dark border-b border-transparent bg-gradient-to-b from-black/45 to-transparent'
           }`}
         >
           <div className="container-x flex h-[72px] items-center justify-between gap-6">
             <Link href="/" className="relative z-10 shrink-0" aria-label={`${siteName}, home`}>
-              <img src={logo} alt={siteName} width={585} height={138} className="h-9 w-auto md:h-10" />
+              <img
+                src={light ? logoOnLight : logo}
+                alt={siteName}
+                width={585}
+                height={138}
+                className="h-9 w-auto md:h-10"
+              />
             </Link>
 
             <nav aria-label="Main" className="hidden lg:block">
@@ -87,8 +97,8 @@ export function Header({ logo, siteName, links, cta, announcement }: Props) {
                       target={l.newTab ? '_blank' : undefined}
                       rel={l.newTab ? 'noopener noreferrer' : undefined}
                       aria-current={isActive(l.url) ? 'page' : undefined}
-                      className={`rounded-full px-3.5 py-2 text-[0.92rem] font-medium transition-colors hover:text-fg ${
-                        isActive(l.url) ? 'text-fg' : 'text-fg/75'
+                      className={`rounded-full px-3.5 py-2 text-[0.95rem] font-medium transition-colors hover:text-fg ${
+                        isActive(l.url) ? 'text-fg underline decoration-fire decoration-2 underline-offset-[10px]' : 'text-fg/80'
                       }`}
                     >
                       {l.label}
@@ -132,7 +142,7 @@ export function Header({ logo, siteName, links, cta, announcement }: Props) {
                     href={l.url}
                     target={l.newTab ? '_blank' : undefined}
                     onClick={() => setOpen(false)}
-                    className="display block border-b border-line py-4 text-3xl"
+                    className="display block border-b border-line py-4 text-[1.9rem]"
                   >
                     {l.label}
                   </Link>

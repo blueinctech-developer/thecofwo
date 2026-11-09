@@ -21,8 +21,35 @@ export const asMedia = (m?: Media | number | null): Media | null => (m && typeof
 export const mediaList = (list?: (Media | number)[] | null): Media[] =>
   (list ?? []).filter((m): m is Media => Boolean(m && typeof m === 'object'))
 
-export const formatDate = (iso?: string | null, opts: Intl.DateTimeFormatOptions = { dateStyle: 'long' }) =>
-  iso ? new Intl.DateTimeFormat('en-GB', { ...opts, timeZone: 'UTC' }).format(new Date(iso)) : ''
+/**
+ * The ministry's timezone. Dates typed in the admin are shown in this zone on the website,
+ * so "1 November, 10:00 AM" stays exactly that for every visitor.
+ */
+export const SITE_TIMEZONE = process.env.SITE_TIMEZONE || 'Africa/Lagos'
+
+const safeZone = (tz?: string | null) => {
+  try {
+    new Intl.DateTimeFormat('en-GB', { timeZone: tz || SITE_TIMEZONE })
+    return tz || SITE_TIMEZONE
+  } catch {
+    return SITE_TIMEZONE
+  }
+}
+
+export const formatDate = (
+  iso?: string | null,
+  opts: Intl.DateTimeFormatOptions = { dateStyle: 'long' },
+  tz?: string | null,
+) => (iso ? new Intl.DateTimeFormat('en-GB', { ...opts, timeZone: safeZone(tz) }).format(new Date(iso)) : '')
+
+export const formatTime = (iso?: string | null, tz?: string | null) =>
+  iso ? new Intl.DateTimeFormat('en-GB', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: safeZone(tz) }).format(new Date(iso)) : ''
+
+/** Day of month and short month name, for date badges. */
+export const dateParts = (iso: string, tz?: string | null) => ({
+  day: formatDate(iso, { day: 'numeric' }, tz),
+  month: formatDate(iso, { month: 'short' }, tz),
+})
 
 /** Splits a heading so the highlighted words can be styled. */
 export const splitHighlight = (heading: string, highlight?: string | null) => {

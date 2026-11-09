@@ -77,7 +77,7 @@ export function PhotoGrid({ photos }: { photos: LightboxPhoto[] }) {
         ref={dialog}
         onClose={() => setIndex(null)}
         onClick={(e) => e.target === dialog.current && close()}
-        className="m-0 h-[100dvh] max-h-none w-screen max-w-none bg-ink/95 p-0 text-fg backdrop:bg-ink/90"
+        className="theme-dark m-0 h-[100dvh] max-h-none w-screen max-w-none bg-ink/95 p-0 text-fg backdrop:bg-black/80"
         aria-label="Photo viewer"
       >
         {current && (

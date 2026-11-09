@@ -40,7 +40,7 @@ type Props = {
 export function Footer({ settings, nav, logo, extraLinks }: Props) {
   const year = new Date().getFullYear()
   return (
-    <footer className="relative mt-24 border-t border-line bg-ink-2">
+    <footer className="theme-dark relative mt-24 bg-ink">
       <div className="container-x grid gap-12 py-16 md:py-20 lg:grid-cols-[1.2fr_1fr] lg:gap-20">
         <div>
           <h2 className="display text-3xl md:text-4xl">{settings.newsletterHeading || 'Stay connected'}</h2>

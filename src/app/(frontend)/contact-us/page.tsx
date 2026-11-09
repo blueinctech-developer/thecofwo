@@ -56,7 +56,7 @@ export default async function ContactPage() {
                 key={c.id ?? i}
                 data-reveal
                 style={{ '--d': i + 1 } as React.CSSProperties}
-                className="rounded-[var(--radius-xl)] border border-line bg-ink-2 p-8"
+                className="card p-8"
               >
                 <h3 className="text-xl font-semibold">{c.title}</h3>
                 {c.body && <p className="mt-3 text-muted">{c.body}</p>}
@@ -68,7 +68,7 @@ export default async function ContactPage() {
               </div>
             ))}
             {!!s.serviceTimes?.length && (
-              <div className="rounded-[var(--radius-xl)] border border-line bg-ink-2 p-8">
+              <div className="card p-8">
                 <h3 className="text-xl font-semibold">Service times</h3>
                 <ul className="mt-4 space-y-2 text-muted">
                   {s.serviceTimes.map((t) => (

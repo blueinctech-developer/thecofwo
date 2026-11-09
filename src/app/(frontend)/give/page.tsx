@@ -44,7 +44,7 @@ export default async function GivePage() {
                     key={m.id ?? i}
                     data-reveal
                     style={{ '--d': i } as React.CSSProperties}
-                    className="rounded-[var(--radius-xl)] border border-line bg-ink-2 p-7 md:p-9"
+                    className="card p-7 md:p-9"
                   >
                     <h3 className="text-2xl font-semibold">{m.title}</h3>
                     {m.description && <p className="mt-3 text-muted">{m.description}</p>}
@@ -58,7 +58,7 @@ export default async function GivePage() {
                 ))}
               </div>
             ) : (
-              <div data-reveal className="rounded-[var(--radius-xl)] border border-line bg-ink-2 p-8 md:p-10">
+              <div data-reveal className="card p-8 md:p-10">
                 <h3 className="text-2xl font-semibold">How to give</h3>
                 <p className="mt-4 max-w-[56ch] text-lg text-muted">{p.fallback}</p>
                 <div className="mt-8 flex flex-wrap gap-3">

@@ -22,6 +22,7 @@ In **Settings → Environment Variables**, add:
 | Name | Value |
 |---|---|
 | `PAYLOAD_SECRET` | A long random string (`node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`). Use a different one from local. |
+| `SITE_TIMEZONE` | The ministry's timezone, e.g. `Africa/Lagos` (the default) or `Europe/London`. Dates and event times are shown in this zone. |
 | `NEXT_PUBLIC_SERVER_URL` | `https://thecofwo.org` for Production. For Preview, leave unset (the Vercel URL is used). |
 | `RESEND_API_KEY` | Optional. Enables email alerts for new messages and signups. |
 | `EMAIL_FROM_ADDRESS` | Optional. A sender on a domain verified in Resend, e.g. `no-reply@thecofwo.org`. |
@@ -45,7 +46,11 @@ This uploads the 61 photos to Vercel Blob and fills the pages, blog posts and ga
 
 Open `https://<your-vercel-url>/admin`. The first visit shows **Create first user**, and that account is always an admin. Add other staff under **Team members** (choose *Editor* for people who only manage content).
 
-## 6. Connect the domain
+## 6. Work through "Before launch"
+
+The admin dashboard shows a **Before launch** checklist: service times, where you meet, leadership, ways to give, social links, a sermon or livestream link, and confirmed testimonies. Each item links to the right screen and ticks itself off when filled in. When the essentials are done, the site is ready to show the congregation.
+
+## 7. Connect the domain
 
 When the site has been reviewed on the Vercel URL:
 

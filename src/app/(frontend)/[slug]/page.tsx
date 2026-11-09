@@ -2,7 +2,6 @@ import { ArrowLeft } from '@phosphor-icons/react/dist/ssr'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
-import { Media } from '@/components/Media'
 import { PageBanner } from '@/components/PageBanner'
 import { PostCard } from '@/components/PostCard'
 import { RichText } from '@/components/RichText'
@@ -103,38 +102,30 @@ export default async function SlugPage({ params }: Props) {
   return (
     <article>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <header className="container-x pb-12 pt-36 md:pt-44">
-        <div className="mx-auto max-w-4xl">
-          <Link href="/cofwo-blog" className="inline-flex items-center gap-2 text-sm text-muted hover:text-fg">
-            <ArrowLeft size={16} aria-hidden /> All articles
-          </Link>
-          <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted">
-            {cats.map((c) => (
-              <Link key={c.id} href={`/category/${c.slug}`} className="font-medium text-fire-soft hover:underline">
-                {c.title}
-              </Link>
-            ))}
-            <time dateTime={post.publishedAt ?? undefined}>{formatDate(post.publishedAt)}</time>
-            <span>{readingTime(post.content)} min read</span>
-          </div>
-          <h1 className="mt-5 text-4xl font-bold leading-[1.08] tracking-tight md:text-6xl">{post.title}</h1>
-          {post.excerpt && <p className="mt-6 max-w-[60ch] text-xl text-fg/80">{post.excerpt}</p>}
-          {post.authorName && <p className="mt-6 text-sm text-muted">By {post.authorName}</p>}
+      <PageBanner title={post.title} image={post.heroImage} compact>
+        <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-fg/85">
+          {cats.map((c) => (
+            <Link key={c.id} href={`/category/${c.slug}`} className="font-semibold text-fire-soft hover:underline">
+              {c.title}
+            </Link>
+          ))}
+          <time dateTime={post.publishedAt ?? undefined}>{formatDate(post.publishedAt)}</time>
+          <span>{readingTime(post.content)} min read</span>
+          {post.authorName && <span>By {post.authorName}</span>}
         </div>
-      </header>
-      {post.heroImage && typeof post.heroImage === 'object' && (
-        <div className="container-x">
-          <div className="mx-auto aspect-[16/9] max-w-6xl overflow-hidden rounded-[var(--radius-xl)] bg-ink-3">
-            <Media media={post.heroImage} priority sizes="(min-width: 1280px) 1150px, 100vw" className="h-full w-full object-cover" />
-          </div>
-        </div>
-      )}
-      <div className="container-x py-16 md:py-20">
+      </PageBanner>
+      <div className="container-x pt-10">
+        <Link href="/cofwo-blog" className="mx-auto flex max-w-[70ch] items-center gap-2 text-sm font-medium text-muted hover:text-fg">
+          <ArrowLeft size={16} aria-hidden /> All articles
+        </Link>
+        {post.excerpt && <p className="lead mx-auto mt-8 max-w-[70ch] !text-[1.3rem] !text-fg">{post.excerpt}</p>}
+      </div>
+      <div className="container-x pb-16 pt-8 md:pb-24">
         <RichText data={post.content} className="prose-cofwo mx-auto max-w-[70ch]" />
       </div>
 
       {related.docs.length > 0 && (
-        <section className="border-t border-line">
+        <section className="bg-ink-2">
           <div className="container-x py-20 md:py-24">
             <h2 className="display text-3xl md:text-4xl">Keep reading</h2>
             <div className="mt-12 grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">

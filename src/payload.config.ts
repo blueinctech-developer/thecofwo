@@ -16,6 +16,7 @@ import { Media } from './collections/Media'
 import { Messages } from './collections/Messages'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
+import { Sermons } from './collections/Sermons'
 import { Subscribers } from './collections/Subscribers'
 import { Testimonies } from './collections/Testimonies'
 import { Users } from './collections/Users'
@@ -39,6 +40,21 @@ export default buildConfig({
   admin: {
     user: Users.slug,
     importMap: { baseDir: path.resolve(dirname) },
+    timezones: {
+      defaultTimezone: process.env.SITE_TIMEZONE || 'Africa/Lagos',
+      supportedTimezones: [
+        { label: 'West Africa (Lagos)', value: 'Africa/Lagos' },
+        { label: 'Ghana (Accra)', value: 'Africa/Accra' },
+        { label: 'East Africa (Nairobi)', value: 'Africa/Nairobi' },
+        { label: 'South Africa (Johannesburg)', value: 'Africa/Johannesburg' },
+        { label: 'UK (London)', value: 'Europe/London' },
+        { label: 'Central Europe (Berlin)', value: 'Europe/Berlin' },
+        { label: 'US Eastern (New York)', value: 'America/New_York' },
+        { label: 'US Central (Chicago)', value: 'America/Chicago' },
+        { label: 'US Pacific (Los Angeles)', value: 'America/Los_Angeles' },
+        { label: 'UTC', value: 'UTC' },
+      ],
+    },
     meta: {
       titleSuffix: ' · COFWO Admin',
       icons: [{ rel: 'icon', type: 'image/png', url: '/favicon-32x32.png' }],
@@ -48,7 +64,7 @@ export default buildConfig({
         Logo: '@/components/admin/Logo#Logo',
         Icon: '@/components/admin/Icon#Icon',
       },
-      beforeDashboard: ['@/components/admin/Welcome#Welcome'],
+      beforeDashboard: ['@/components/admin/Welcome#Welcome', '@/components/admin/LaunchChecklist#LaunchChecklist'],
     },
     livePreview: {
       url: ({ data, collectionConfig, globalConfig }) => {
@@ -58,12 +74,13 @@ export default buildConfig({
           if (globalConfig?.slug === 'contact-page') return '/contact-us'
           if (collectionConfig?.slug === 'posts' || collectionConfig?.slug === 'pages') return `/${data?.slug ?? ''}`
           if (collectionConfig?.slug === 'events') return `/events/${data?.slug ?? ''}`
+          if (collectionConfig?.slug === 'sermons') return `/sermons/${data?.slug ?? ''}`
           return '/'
         })()
         return `/next/preview?path=${encodeURIComponent(path)}`
       },
       globals: ['home-page', 'about-page', 'give-page', 'contact-page'],
-      collections: ['posts', 'pages', 'events'],
+      collections: ['posts', 'pages', 'events', 'sermons'],
       breakpoints: [
         { label: 'Phone', name: 'phone', width: 390, height: 844 },
         { label: 'Tablet', name: 'tablet', width: 820, height: 1180 },
@@ -71,7 +88,7 @@ export default buildConfig({
       ],
     },
   },
-  collections: [Posts, Categories, Pages, Events, Testimonies, Albums, Media, Messages, Subscribers, Users],
+  collections: [Posts, Categories, Pages, Sermons, Events, Testimonies, Albums, Media, Messages, Subscribers, Users],
   globals: [HomePage, AboutPage, GivePage, ContactPage, SiteSettings, Navigation],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
@@ -99,7 +116,7 @@ export default buildConfig({
       clientUploads: true,
     }),
     seoPlugin({
-      collections: ['posts', 'pages', 'events'],
+      collections: ['posts', 'pages', 'events', 'sermons'],
       uploadsCollection: 'media',
       tabbedUI: false,
       generateTitle: ({ doc }) => `${(doc as { title?: string })?.title ?? ''} | COFWO`,

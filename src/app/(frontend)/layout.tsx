@@ -14,7 +14,7 @@ import './styles.css'
 const archivo = Archivo({ subsets: ['latin'], axes: ['wdth'], variable: '--font-archivo', display: 'swap' })
 const geist = Geist({ subsets: ['latin'], variable: '--font-geist', display: 'swap' })
 
-export const viewport: Viewport = { themeColor: '#0f0d0e', colorScheme: 'dark' }
+export const viewport: Viewport = { themeColor: '#ffffff', colorScheme: 'light' }
 
 export async function generateMetadata(): Promise<Metadata> {
   const s = await getSettings()
@@ -53,9 +53,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   })
 
   const logo = mediaUrl(settings.logoLight) || '/cofwo-logo-white.png'
+  const logoOnLight = mediaUrl(settings.logoDark) || '/cofwo-logo.png'
   const links = (nav.header ?? [])
     .filter((l) => l.label && l.url)
     .map((l) => ({ label: l.label!, url: l.url!, newTab: l.newTab }))
+  // Once the first sermon is published, "Sermons" joins the menu automatically (unless staff already added it).
+  const sermonCount = await payload.count({ collection: 'sermons', where: { _status: { equals: 'published' } } })
+  if (sermonCount.totalDocs > 0 && !links.some((l) => l.url.startsWith('/sermons'))) {
+    const at = Math.max(0, links.findIndex((l) => l.url === '/cofwo-blog'))
+    links.splice(at, 0, { label: 'Sermons', url: '/sermons', newTab: false })
+  }
   const cta = nav.headerCta?.label && nav.headerCta?.url ? { label: nav.headerCta.label, url: nav.headerCta.url } : null
   const announcement =
     settings.announcementOn && settings.announcementText
@@ -82,9 +89,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="en" className={`${archivo.variable} ${geist.variable}`}>
-      <body className="grain min-h-[100dvh] overflow-x-hidden">
+      <body className="min-h-[100dvh] overflow-x-hidden">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-        <Header logo={logo} siteName={settings.siteName} links={links} cta={cta} announcement={announcement} />
+        <Header logo={logo} logoOnLight={logoOnLight} siteName={settings.siteName} links={links} cta={cta} announcement={announcement} />
         <main id="main">{children}</main>
         <Footer
           settings={settings}

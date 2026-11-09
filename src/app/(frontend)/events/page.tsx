@@ -58,9 +58,9 @@ export default async function EventsPage() {
           <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {past.docs.map((e) => (
               <li key={e.id}>
-                <Link href={`/events/${e.slug}`} className="block rounded-xl border border-line p-5 hover:border-line-strong">
+                <Link href={`/events/${e.slug}`} className="card block p-5 hover:border-line-strong">
                   <span className="block font-medium">{e.title}</span>
-                  <span className="text-sm text-muted">{formatDate(e.startDate)}</span>
+                  <span className="text-sm text-muted">{formatDate(e.startDate, undefined, e.startDate_tz)}</span>
                 </Link>
               </li>
             ))}

@@ -2,13 +2,21 @@
 
 Sign in at **thecofwo.org/admin**. Everything you publish appears on the website straight away.
 
+## Before launch
+
+The dashboard shows a **Before launch** list of details the website still needs (service times, address, leadership, giving, social links, a sermon or livestream link, testimonies). Click an item to go straight to where it is filled in. It disappears once everything is done.
+
 ## Everyday tasks
 
 **Change homepage text or photos.** *Website pages → Homepage.* Use the tabs (Hero, Welcome, The Gathering, Other sections). Click **Save**. The eye icon opens a live preview beside the editor.
 
 **Write a blog post.** *Blog → Blog posts → Create new.* Add a title, summary, cover photo and the article. It saves as a draft automatically. Click **Preview** to see it on the site, then **Publish changes** when ready.
 
-**Add an event.** *Ministry → Events → Create new.* Set the start (and end) date and time, location, and an optional registration link. Upcoming events appear on the homepage and the Events page; past events move down automatically.
+**Add a sermon.** *Ministry → Sermons → Create new.* Give it a title, speaker and date, and paste the YouTube, Facebook or Vimeo link. The video plays on the website, the newest sermon appears on the homepage, and "Sermons" is added to the top menu automatically once the first one is published.
+
+**Service times and where you meet.** *Settings → Site settings → Contact & services.* These appear in the homepage "Join us" section, on the Contact page and in the footer. Livestream and video channel links go under *Watch online*.
+
+**Add an event.** *Ministry → Events → Create new.* Set the start (and end) date and time (choose the timezone the event happens in), location, and an optional registration link. Upcoming events appear on the homepage and the Events page; past events move down automatically.
 
 **Upload photos to the gallery.** *Ministry → Gallery albums.* Open an album (or create one) and add photos. Drag to reorder. Every photo needs a short description for people using screen readers.
 

@@ -2,24 +2,28 @@
 
 /*
   COFWO design tokens
-  Theme: dark-first ("fire in the night"), one accent colour (COFWO red).
+  Theme: light and welcoming. One accent colour (COFWO red).
+  Dark is used only for photographic bands (hero, page banners, closing invitation, footer):
+  wrap those in `.theme-dark` and the same colour names switch to their dark values.
   Shapes: buttons are full pills, photos and panels use --radius-xl (20px), inputs use 12px.
 */
 @theme {
-  --color-ink: #0f0d0e;
-  --color-ink-2: #171415;
-  --color-ink-3: #211d1e;
-  --color-ink-4: #2c2728;
-  --color-fg: #f5f0ea;
-  --color-muted: #b9afa8;
-  --color-subtle: #8a807a;
-  --color-fire: #d1121f;
-  --color-fire-hover: #e81c2a;
-  --color-fire-soft: #ff5a4c;
-  --color-line: rgb(245 240 234 / 0.1);
-  --color-line-strong: rgb(245 240 234 / 0.2);
+  --color-ink: #fafafa; /* page background */
+  --color-ink-2: #f3f3f4; /* alternate section / input background */
+  --color-ink-3: #e7e7ea; /* image placeholders, chips */
+  --color-ink-4: #d4d4d8;
+  --color-card: #ffffff;
+  --color-fg: #18181b; /* headings and body text */
+  --color-prose: #2b2b31; /* long-form reading text */
+  --color-muted: #52525b; /* secondary text, 7:1 on page */
+  --color-subtle: #6b6b74; /* tertiary text, 5:1 on page */
+  --color-fire: #c8101c; /* brand red: buttons, accents */
+  --color-fire-hover: #a80d17;
+  --color-fire-soft: #b40f1a; /* red used for small text on light backgrounds */
+  --color-line: rgb(24 24 27 / 0.1);
+  --color-line-strong: rgb(24 24 27 / 0.2);
 
-  --font-display: var(--font-archivo), 'Arial Narrow', system-ui, sans-serif;
+  --font-display: var(--font-archivo), system-ui, sans-serif;
   --font-sans: var(--font-geist), system-ui, -apple-system, 'Segoe UI', sans-serif;
 
   --radius-xl: 20px;
@@ -32,9 +36,27 @@
   }
 }
 
+/* Dark photographic bands */
+.theme-dark {
+  --color-ink: #111113;
+  --color-ink-2: #19191c;
+  --color-ink-3: #26262a;
+  --color-ink-4: #34343a;
+  --color-card: #19191c;
+  --color-fg: #fafafa;
+  --color-prose: #e4e4e7;
+  --color-muted: #c4c4cc;
+  --color-subtle: #9a9aa3;
+  --color-fire-soft: #ff6b5e;
+  --color-line: rgb(250 250 250 / 0.12);
+  --color-line-strong: rgb(250 250 250 / 0.28);
+  color: var(--color-fg);
+  color-scheme: dark;
+}
+
 @layer base {
   html {
-    color-scheme: dark;
+    color-scheme: light;
     background: var(--color-ink);
     scroll-padding-top: 6rem;
     -webkit-text-size-adjust: 100%;
@@ -51,10 +73,11 @@
     color: white;
   }
   :focus-visible {
-    outline: 2px solid var(--color-fire-soft);
+    outline: 2px solid var(--color-fire);
     outline-offset: 3px;
     border-radius: 6px;
   }
+  .theme-dark :focus-visible { outline-color: #fafafa; }
   img {
     max-width: 100%;
     height: auto;
@@ -64,7 +87,7 @@
 @layer components {
   .container-x {
     width: 100%;
-    max-width: 1320px;
+    max-width: 1280px;
     margin-inline: auto;
     padding-inline: 1.25rem;
   }
@@ -72,22 +95,25 @@
     .container-x { padding-inline: 2rem; }
   }
 
+  /* Headings: sentence case, heavy weight, tight tracking */
   .display {
     font-family: var(--font-display);
-    font-stretch: 112%;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    line-height: 0.98;
-    text-transform: uppercase;
+    font-weight: 750;
+    letter-spacing: -0.03em;
+    line-height: 1.04;
+    text-wrap: balance;
   }
 
   .eyebrow {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 600;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--color-fire-soft);
   }
+
+  .lead { font-size: 1.15rem; line-height: 1.65; color: var(--color-muted); }
+  @media (min-width: 768px) { .lead { font-size: 1.25rem; } }
 
   .btn {
     display: inline-flex;
@@ -96,9 +122,9 @@
     gap: 0.6rem;
     white-space: nowrap;
     border-radius: 999px;
-    padding: 0.9rem 1.5rem;
+    padding: 0.95rem 1.6rem;
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 0.97rem;
     line-height: 1;
     transition:
       background-color 0.25s var(--ease-out-expo),
@@ -112,9 +138,9 @@
   .btn-ghost {
     border: 1px solid var(--color-line-strong);
     color: var(--color-fg);
-    background: rgb(15 13 14 / 0.35);
-    backdrop-filter: blur(8px);
+    background: transparent;
   }
+  .theme-dark .btn-ghost { background: rgb(17 17 19 / 0.3); backdrop-filter: blur(8px); }
   .btn-ghost:hover { border-color: var(--color-fg); }
   .btn .arrow { transition: transform 0.3s var(--ease-out-expo); }
   .btn:hover .arrow { transform: translateX(3px); }
@@ -128,34 +154,42 @@
   }
   .link-underline:hover { background-size: 100% 1px; }
 
-  .field-label { display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 0.5rem; color: var(--color-fg); }
+  .card {
+    background: var(--color-card);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-xl);
+    box-shadow: 0 1px 2px rgb(24 24 27 / 0.04), 0 8px 24px -12px rgb(24 24 27 / 0.12);
+  }
+  .theme-dark .card { box-shadow: none; }
+
+  .field-label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--color-fg); }
   .field {
     width: 100%;
     border-radius: 12px;
     border: 1px solid var(--color-line-strong);
-    background: var(--color-ink-2);
+    background: var(--color-card);
     color: var(--color-fg);
     padding: 0.85rem 1rem;
     font-size: 1rem;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s;
   }
   .field::placeholder { color: var(--color-subtle); }
-  .field:focus { outline: none; border-color: var(--color-fire-soft); box-shadow: 0 0 0 3px rgb(209 18 31 / 0.25); }
-  .field[aria-invalid='true'] { border-color: var(--color-fire-soft); }
+  .field:focus { outline: none; border-color: var(--color-fire); box-shadow: 0 0 0 3px rgb(200 16 28 / 0.18); }
+  .field[aria-invalid='true'] { border-color: var(--color-fire); }
 
-  /* Rich text from the admin (blog posts, pages) */
-  .prose-cofwo { font-size: 1.125rem; line-height: 1.75; color: #e3dcd5; }
+  /* Rich text from the admin (blog posts, pages, sermons) */
+  .prose-cofwo { font-size: 1.15rem; line-height: 1.8; color: var(--color-prose); }
   .prose-cofwo > * + * { margin-top: 1.25em; }
-  .prose-cofwo h2 { font-family: var(--font-display); font-stretch: 108%; font-weight: 750; font-size: 1.75rem; line-height: 1.15; color: var(--color-fg); margin-top: 2.2em; letter-spacing: -0.01em; }
-  .prose-cofwo h3 { font-weight: 700; font-size: 1.3rem; color: var(--color-fg); margin-top: 1.8em; }
-  .prose-cofwo h4 { font-weight: 700; font-size: 1.1rem; color: var(--color-fg); margin-top: 1.6em; }
+  .prose-cofwo h2 { font-family: var(--font-display); font-weight: 750; font-size: 1.85rem; line-height: 1.15; color: var(--color-fg); margin-top: 2em; letter-spacing: -0.025em; }
+  .prose-cofwo h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.4rem; line-height: 1.25; color: var(--color-fg); margin-top: 1.8em; letter-spacing: -0.015em; }
+  .prose-cofwo h4 { font-weight: 700; font-size: 1.15rem; color: var(--color-fg); margin-top: 1.6em; }
   .prose-cofwo a { color: var(--color-fire-soft); text-decoration: underline; text-underline-offset: 3px; }
   .prose-cofwo strong { color: var(--color-fg); }
   .prose-cofwo ul { list-style: disc; padding-left: 1.4em; }
   .prose-cofwo ol { list-style: decimal; padding-left: 1.4em; }
   .prose-cofwo li + li { margin-top: 0.4em; }
-  .prose-cofwo li::marker { color: var(--color-fire-soft); }
-  .prose-cofwo blockquote { border-left: 3px solid var(--color-fire); padding: 0.25em 0 0.25em 1.25em; font-size: 1.25rem; color: var(--color-fg); font-style: italic; }
+  .prose-cofwo li::marker { color: var(--color-fire); }
+  .prose-cofwo blockquote { border-left: 3px solid var(--color-fire); padding: 0.25em 0 0.25em 1.25em; font-size: 1.3rem; color: var(--color-fg); font-style: italic; }
   .prose-cofwo hr { border-color: var(--color-line); margin-block: 2.5em; }
   .prose-cofwo img { border-radius: var(--radius-xl); }
 }
@@ -163,37 +197,26 @@
 /* Reveal-on-scroll: elements start hidden only when JS has marked the page ready */
 .js [data-reveal] {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.9s var(--ease-out-expo), transform 0.9s var(--ease-out-expo);
-  transition-delay: calc(var(--d, 0) * 90ms);
+  transform: translateY(20px);
+  transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo);
+  transition-delay: calc(var(--d, 0) * 80ms);
 }
 .js [data-reveal][data-shown] { opacity: 1; transform: none; }
 
 /* Hero entrance: text rises in sequence, photo settles from a slight zoom */
 @keyframes hero-rise {
-  from { opacity: 0; transform: translateY(28px); }
+  from { opacity: 0; transform: translateY(24px); }
   to { opacity: 1; transform: none; }
 }
 @keyframes hero-settle {
-  from { transform: scale(1.08); }
+  from { transform: scale(1.06); }
   to { transform: scale(1); }
 }
-.hero-in { animation: hero-rise 1s var(--ease-out-expo) both; animation-delay: calc(0.15s + var(--i, 0) * 0.12s); }
-.hero-zoom { animation: hero-settle 2.4s var(--ease-out-expo) both; }
+.hero-in { animation: hero-rise 0.9s var(--ease-out-expo) both; animation-delay: calc(0.1s + var(--i, 0) * 0.1s); }
+.hero-zoom { animation: hero-settle 2.2s var(--ease-out-expo) both; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
   .js [data-reveal] { opacity: 1; transform: none; }
   .animate-marquee { animation: none !important; }
-}
-
-/* Subtle film grain over the whole page, fixed so it never repaints on scroll */
-.grain::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  pointer-events: none;
-  opacity: 0.05;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }

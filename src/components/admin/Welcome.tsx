@@ -7,6 +7,7 @@ const links = [
   { href: '/admin/globals/home-page', title: 'Edit the homepage', text: 'Hero, welcome text, The Gathering and more' },
   { href: '/admin/collections/posts/create', title: 'Write a blog post', text: 'Save drafts, then publish when ready' },
   { href: '/admin/collections/events/create', title: 'Add an event', text: 'Services, conferences and gatherings' },
+  { href: '/admin/collections/sermons/create', title: 'Add a sermon', text: 'Paste a YouTube or Facebook video link' },
   { href: '/admin/collections/albums', title: 'Upload photos', text: 'Create or update gallery albums' },
   { href: '/admin/globals/site-settings', title: 'Site settings', text: 'Contact details, social links, giving' },
 ]
@@ -50,7 +51,7 @@ export const Welcome = async ({ payload, user }: ServerProps) => {
           waiting in the inbox →
         </a>
       )}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 12 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 12 }}>
         {links.map((l) => (
           <a
             key={l.href}

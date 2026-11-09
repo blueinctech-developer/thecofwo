@@ -5,6 +5,8 @@ import {
   GalleryStrip,
   Gathering,
   Hero,
+  JoinUs,
+  LatestMessage,
   LatestPosts,
   Marquee,
   Pillars,
@@ -34,7 +36,7 @@ export default async function HomePage() {
   const published = await publishedWhere()
   const now = new Date().toISOString()
 
-  const [home, settings, posts, events, testimonies] = await Promise.all([
+  const [home, settings, posts, events, testimonies, sermons] = await Promise.all([
     getGlobal('home-page'),
     getSettings(),
     payload.find({ collection: 'posts', where: published, sort: '-publishedAt', limit: 3, depth: 1 }),
@@ -46,6 +48,7 @@ export default async function HomePage() {
       depth: 0,
     }),
     payload.find({ collection: 'testimonies', where: { show: { equals: true } }, sort: 'order', limit: 8, depth: 0 }),
+    payload.find({ collection: 'sermons', where: published, sort: '-date', limit: 1, depth: 1 }),
   ])
 
   return (
@@ -53,8 +56,10 @@ export default async function HomePage() {
       <Hero hero={home.hero} />
       <Marquee text={settings.ticker} />
       <Welcome welcome={home.welcome} stats={home.stats} />
+      <JoinUs visit={home.visit} settings={settings} />
       <Pillars settings={settings} />
       <Gathering gathering={home.gathering} />
+      <LatestMessage section={home.sermonsSection} sermon={sermons.docs[0]} settings={settings} />
       <UpcomingEvents section={home.eventsSection} events={events.docs} />
       <Testimonies section={home.testimoniesSection} items={testimonies.docs} />
       <LatestPosts section={home.blogSection} posts={posts.docs} />

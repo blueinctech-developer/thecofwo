@@ -1,13 +1,13 @@
-import { ArrowLeft, CalendarBlank, Clock, Globe, MapPin } from '@phosphor-icons/react/dist/ssr'
+import { ArrowLeft, CalendarBlank, CalendarPlus, Clock, Globe, MapPin } from '@phosphor-icons/react/dist/ssr'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 import { Button } from '@/components/Button'
 import { PageBanner } from '@/components/PageBanner'
-import { RichText } from '@/components/RichText'
+import { hasText, RichText } from '@/components/RichText'
 import { buildMetadata } from '@/lib/meta'
 import { getPayloadClient, isPreview, publishedWhere } from '@/lib/payload'
-import { formatDate, siteUrl } from '@/lib/utils'
+import { formatDate, formatTime, siteUrl } from '@/lib/utils'
 
 export const revalidate = 600
 
@@ -36,8 +36,19 @@ const formats = { 'in-person': 'In person', online: 'Online', hybrid: 'In person
 export default async function EventPage({ params }: Props) {
   const e = await getEvent((await params).slug)
   if (!e) notFound()
-  const time = (iso: string) =>
-    new Intl.DateTimeFormat('en-GB', { hour: 'numeric', minute: '2-digit', timeZone: 'UTC' }).format(new Date(iso))
+  const tz = e.startDate_tz
+  const gcal = (iso: string) => new Date(iso).toISOString().replace(/[-:]|\.\d{3}/g, '')
+  const end = e.endDate || new Date(new Date(e.startDate).getTime() + 2 * 3600 * 1000).toISOString()
+  const calendarUrl = `https://calendar.google.com/calendar/render?${new URLSearchParams({
+    action: 'TEMPLATE',
+    text: e.title,
+    dates: `${gcal(e.startDate)}/${gcal(end)}`,
+    details: `${e.summary ?? ''}
+
+${siteUrl()}/events/${e.slug}`.trim(),
+    location: e.location ?? '',
+  })}`
+  const time = (iso: string) => formatTime(iso, tz)
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -67,14 +78,16 @@ export default async function EventPage({ params }: Props) {
       <section className="container-x py-16 md:py-24">
         <div className="grid gap-12 lg:grid-cols-12">
           <aside className="lg:order-2 lg:col-span-4">
-            <dl className="space-y-5 rounded-[var(--radius-xl)] border border-line bg-ink-2 p-7">
+            <dl className="card space-y-5 p-7">
               <div className="flex gap-3">
                 <CalendarBlank size={22} className="shrink-0 text-fire-soft" aria-hidden />
                 <div>
                   <dt className="sr-only">Date</dt>
                   <dd>
-                    {formatDate(e.startDate, { dateStyle: 'full' })}
-                    {e.endDate && formatDate(e.endDate) !== formatDate(e.startDate) && <> to {formatDate(e.endDate, { dateStyle: 'full' })}</>}
+                    {formatDate(e.startDate, { dateStyle: 'full' }, tz)}
+                    {e.endDate && formatDate(e.endDate, undefined, tz) !== formatDate(e.startDate, undefined, tz) && (
+                      <> to {formatDate(e.endDate, { dateStyle: 'full' }, tz)}</>
+                    )}
                   </dd>
                 </div>
               </div>
@@ -112,7 +125,19 @@ export default async function EventPage({ params }: Props) {
             )}
           </aside>
           <div className="lg:col-span-8">
-            <RichText data={e.details} className="prose-cofwo max-w-[68ch]" />
+            {hasText(e.details) ? (
+              <RichText data={e.details} className="prose-cofwo max-w-[68ch]" />
+            ) : (
+              e.summary && <p className="lead max-w-[60ch] !text-fg">{e.summary}</p>
+            )}
+            <div className="mt-10 flex flex-wrap gap-3">
+              <a href={calendarUrl} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">
+                <CalendarPlus size={18} aria-hidden /> Add to Google Calendar
+              </a>
+              <Link href="/contact-us" className="btn btn-ghost">
+                Ask a question
+              </Link>
+            </div>
           </div>
         </div>
       </section>

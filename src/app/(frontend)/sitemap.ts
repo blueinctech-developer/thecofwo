@@ -11,15 +11,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const published = { _status: { equals: 'published' as const } }
   const opts = { limit: 1000, depth: 0, select: { slug: true, updatedAt: true } } as const
 
-  const [posts, pages, events, albums, categories] = await Promise.all([
+  const [posts, pages, events, albums, categories, sermons] = await Promise.all([
     payload.find({ collection: 'posts', where: published, ...opts }),
     payload.find({ collection: 'pages', where: published, ...opts }),
     payload.find({ collection: 'events', where: published, ...opts }),
     payload.find({ collection: 'albums', where: published, ...opts }),
     payload.find({ collection: 'categories', ...opts }),
+    payload.find({ collection: 'sermons', where: published, ...opts }),
   ])
 
-  const fixed = ['', '/about-us', '/contact-us', '/cofwo-blog', '/gallery', '/events', '/give'].map((p) => ({
+  const fixed = ['', '/about-us', '/contact-us', '/cofwo-blog', '/gallery', '/events', '/sermons', '/give'].map((p) => ({
     url: `${base}${p}`,
     changeFrequency: 'weekly' as const,
     priority: p === '' ? 1 : 0.8,
@@ -37,5 +38,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...events.docs.map(entry('/events/')),
     ...albums.docs.map(entry('/gallery/')),
     ...categories.docs.map(entry('/category/')),
+    ...sermons.docs.map(entry('/sermons/')),
   ]
 }
