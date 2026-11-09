@@ -1,33 +1,73 @@
-# Deployment guide
+# Deploying to Vercel
 
-The site is plain files. Upload the **whole project folder** except `docs/` (keeping `docs/` online does no harm, but it isn't needed). Do **not** change the domain until the preview has been approved.
+The whole site, including the admin, runs as one Vercel project. You need a Vercel account with access to the GitHub repository `blueinctech-developer/thecofwo`.
 
-## Before you start
-1. Get a free **Web3Forms access key**: go to https://web3forms.com, enter `info@thecofwo.org`, and copy the key from the email. Replace `YOUR_WEB3FORMS_ACCESS_KEY` in every `.html` file (see EDITING_GUIDE.md, "Connect the forms").
-2. **Back up the WordPress site** (see ROLLBACK_PLAN.md).
-3. Export the newsletter subscribers from WordPress (Forms → Entries → Export).
+## 1. Create the project
 
-## Step 1: preview (no risk to the live site)
-**Easiest: Netlify Drop**
-1. Go to https://app.netlify.com/drop and drag the project folder onto the page.
-2. You get a preview address like `https://something.netlify.app`. Netlify reads `_redirects` and `_headers` automatically.
-3. Check the pages, submit both forms once, and test a few rows from REDIRECT_MAP.csv.
+1. In Vercel, choose **Add New → Project** and import `blueinctech-developer/thecofwo`.
+2. Framework: **Next.js** (detected). Leave the build command empty: Vercel runs `npm run vercel-build`, which applies database migrations and then builds.
+3. Don't deploy yet. Add the storage and settings below first.
 
-**Or on Hostinger or cPanel**: create a subdomain such as `new.thecofwo.org`, upload the files into its folder with File Manager or FTP, and check that `.htaccess` was uploaded (it is a hidden file). For the preview, temporarily change the `https://thecofwo.org/` targets in `.htaccess` to the subdomain, or test with the domain rules commented out.
+## 2. Add the database and photo storage
 
-## Step 2: go live (only after approval)
-**If staying on the current Apache host (likely Hostinger or cPanel):**
-1. Take a full backup of `public_html` and the database.
-2. Move the WordPress files out of `public_html` into a folder such as `/wp-backup-2026-11/` (don't delete them).
-3. Upload the new site files into `public_html`, including `.htaccess`.
-4. Visit https://thecofwo.org and run the checks below.
+In the project, open **Storage**:
 
-**If moving to Netlify or Cloudflare Pages:** add the custom domain `thecofwo.org` in the dashboard, then update the DNS records at the domain registrar as instructed. The old host keeps serving the old site until DNS switches over (usually 1–24 hours).
+1. **Create Database → Neon (Serverless Postgres)**. Connect it to all environments. This adds `DATABASE_URL`.
+2. **Create → Blob**. Connect it to all environments. This adds `BLOB_READ_WRITE_TOKEN`.
 
-## Step 3: after launch
-- Open the Home, About, Contact, Blog, a post, Gallery, Give and Privacy pages
-- Submit both forms and confirm both emails arrive at info@thecofwo.org
-- Test 5–10 rows of REDIRECT_MAP.csv (for example `/contact-us-2/`, `/blog-list/`, `/shop/` should return 410)
-- Open `/sitemap.xml` and `/robots.txt`
-- In **Google Search Console** (set it up if it doesn't exist): submit `https://thecofwo.org/sitemap.xml` and inspect the homepage
-- Re-run Lighthouse on the live URL and update QA_REPORT.md
+## 3. Environment variables
+
+In **Settings → Environment Variables**, add:
+
+| Name | Value |
+|---|---|
+| `PAYLOAD_SECRET` | A long random string (`node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`). Use a different one from local. |
+| `NEXT_PUBLIC_SERVER_URL` | `https://thecofwo.org` for Production. For Preview, leave unset (the Vercel URL is used). |
+| `RESEND_API_KEY` | Optional. Enables email alerts for new messages and signups. |
+| `EMAIL_FROM_ADDRESS` | Optional. A sender on a domain verified in Resend, e.g. `no-reply@thecofwo.org`. |
+
+Then **Deploy**. The first build creates all database tables.
+
+## 4. Import the existing content
+
+The live database starts empty. Import the old site's text and photos once, from your computer:
+
+```bash
+npm i -g vercel
+vercel link                       # choose the thecofwo project
+vercel env pull .env.production.local
+npx dotenv-cli -e .env.production.local -- npm run seed
+```
+
+This uploads the 61 photos to Vercel Blob and fills the pages, blog posts and gallery. It only runs on an empty site.
+
+## 5. Create the first admin account
+
+Open `https://<your-vercel-url>/admin`. The first visit shows **Create first user**, and that account is always an admin. Add other staff under **Team members** (choose *Editor* for people who only manage content).
+
+## 6. Connect the domain
+
+When the site has been reviewed on the Vercel URL:
+
+1. **Settings → Domains → Add** `thecofwo.org` and `www.thecofwo.org` (the app redirects `www` to the main domain).
+2. Update DNS at the domain registrar as Vercel instructs.
+3. Make sure `NEXT_PUBLIC_SERVER_URL` is `https://thecofwo.org` and redeploy.
+
+Preview deployments tell search engines not to index them (see `src/app/robots.ts`).
+
+## Changing the content model later
+
+After changing anything in `src/collections` or `src/globals`:
+
+```bash
+npm run generate:types
+npm run migrate:create -- describe-the-change
+```
+
+Commit the new file in `src/migrations/`. Vercel applies it on the next deploy.
+
+## Optional extras
+
+- **Email alerts:** add `RESEND_API_KEY`, then set the recipient in *Admin → Site settings → Forms & email*.
+- **Analytics:** enable Vercel Web Analytics in the project dashboard (no cookie banner needed).
+- **Backups:** Neon keeps point-in-time history; Blob files are kept until deleted in the admin.

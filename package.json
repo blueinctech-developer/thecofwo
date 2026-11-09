@@ -1,0 +1,61 @@
+{
+  "name": "thecofwo",
+  "version": "2.0.0",
+  "description": "The Chariot of Fire World Outreach (COFWO) website with Payload CMS admin, built for Vercel",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "scripts": {
+    "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
+    "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
+    "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
+    "vercel-build": "cross-env NODE_OPTIONS=--no-deprecation payload migrate && cross-env NODE_OPTIONS=--no-deprecation next build",
+    "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
+    "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
+    "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
+    "migrate": "cross-env NODE_OPTIONS=--no-deprecation payload migrate",
+    "migrate:create": "cross-env NODE_OPTIONS=--no-deprecation payload migrate:create",
+    "seed": "cross-env NODE_OPTIONS=--no-deprecation payload run src/seed/index.ts",
+    "lint": "cross-env NODE_OPTIONS=--no-deprecation eslint .",
+    "typecheck": "tsc --noEmit",
+    "db": "node scripts/local-db.mjs",
+    "seed:reset": "cross-env SEED_FORCE=1 NODE_OPTIONS=--no-deprecation payload run src/seed/index.ts"
+  },
+  "dependencies": {
+    "@payloadcms/db-postgres": "3.93.0",
+    "@payloadcms/email-resend": "3.93.0",
+    "@payloadcms/live-preview-react": "^3.93.0",
+    "@payloadcms/next": "3.93.0",
+    "@payloadcms/plugin-import-export": "^3.93.0",
+    "@payloadcms/plugin-seo": "3.93.0",
+    "@payloadcms/richtext-lexical": "3.93.0",
+    "@payloadcms/storage-vercel-blob": "3.93.0",
+    "@payloadcms/ui": "3.93.0",
+    "@phosphor-icons/react": "^2.1.10",
+    "cross-env": "^7.0.3",
+    "graphql": "^16.8.1",
+    "motion": "^12.43.0",
+    "next": "16.4.5",
+    "payload": "3.93.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "sharp": "0.34.5"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.5",
+    "@types/jsdom": "^30.0.0",
+    "@types/node": "22.19.9",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "embedded-postgres": "^17.6.0-beta.15",
+    "eslint": "^9.16.0",
+    "eslint-config-next": "16.4.5",
+    "jsdom": "^26.1.0",
+    "prettier": "^3.4.2",
+    "tailwindcss": "^4.3.5",
+    "typescript": "5.7.3"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
