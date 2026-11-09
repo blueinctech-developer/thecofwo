@@ -291,7 +291,13 @@ async function main() {
       visit: {
         heading: 'Join us',
         body: 'Come as you are. Whether it is your first time or you have walked with God for years, there is a place for you here.',
-        image: await img('midcrowd.jpg'),
+        image: await img('gallery/FB_IMG_1774529411035.jpg'),
+      },
+      connect: {
+        heading: 'Need prayer?',
+        body: 'Tell us what you are facing. Our prayer team will stand with you in faith and keep your request private.',
+        image: await img('gallery/FB_IMG_1774529725322.jpg'),
+        link: { label: 'Send a prayer request', url: '/contact-us' },
       },
       sermonsSection: { heading: 'Latest message', show: true },
       testimoniesSection: { eyebrow: 'Testimonies', heading: 'Life-changing testimonies', show: true },

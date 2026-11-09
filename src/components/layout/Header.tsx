@@ -74,17 +74,17 @@ export function Header({ logo, logoOnLight, siteName, links, cta, announcement }
           className={`transition-[background-color,border-color,box-shadow] duration-500 ${
             light
               ? 'border-b border-line bg-ink/90 shadow-[0_6px_24px_-16px_rgb(24_24_27/0.35)] backdrop-blur-xl'
-              : 'theme-dark border-b border-transparent bg-gradient-to-b from-black/45 to-transparent'
+              : 'theme-dark border-b border-transparent bg-gradient-to-b from-black/40 to-transparent'
           }`}
         >
-          <div className="container-x flex h-[72px] items-center justify-between gap-6">
+          <div className={`container-x flex items-center justify-between gap-6 transition-[height] duration-500 ${light ? 'h-[72px]' : 'h-[88px]'}`}>
             <Link href="/" className="relative z-10 shrink-0" aria-label={`${siteName}, home`}>
               <img
                 src={light ? logoOnLight : logo}
                 alt={siteName}
                 width={585}
                 height={138}
-                className="h-9 w-auto md:h-10"
+                className="h-9 w-auto md:h-11"
               />
             </Link>
 
@@ -97,8 +97,8 @@ export function Header({ logo, logoOnLight, siteName, links, cta, announcement }
                       target={l.newTab ? '_blank' : undefined}
                       rel={l.newTab ? 'noopener noreferrer' : undefined}
                       aria-current={isActive(l.url) ? 'page' : undefined}
-                      className={`rounded-full px-3.5 py-2 text-[0.95rem] font-medium transition-colors hover:text-fg ${
-                        isActive(l.url) ? 'text-fg underline decoration-fire decoration-2 underline-offset-[10px]' : 'text-fg/80'
+                      className={`rounded-full px-3 py-2 text-[0.78rem] font-bold uppercase tracking-[0.08em] transition-colors hover:text-fg ${
+                        isActive(l.url) ? 'text-fg underline decoration-fire decoration-2 underline-offset-[10px]' : 'text-fg/85'
                       }`}
                     >
                       {l.label}
@@ -111,7 +111,7 @@ export function Header({ logo, logoOnLight, siteName, links, cta, announcement }
 
             <div className="flex items-center gap-2">
               {cta?.url && cta.label && (
-                <Link href={cta.url} className="btn btn-primary hidden !px-5 !py-2.5 sm:inline-flex">
+                <Link href={cta.url} className="btn btn-fire hidden !px-6 !py-3 sm:inline-flex">
                   {cta.label}
                 </Link>
               )}
@@ -150,7 +150,7 @@ export function Header({ logo, logoOnLight, siteName, links, cta, announcement }
               ))}
             </ul>
             {cta?.url && cta.label && (
-              <Link href={cta.url} onClick={() => setOpen(false)} className="btn btn-primary mt-8 w-full">
+              <Link href={cta.url} onClick={() => setOpen(false)} className="btn btn-fire mt-8 w-full">
                 {cta.label}
               </Link>
             )}

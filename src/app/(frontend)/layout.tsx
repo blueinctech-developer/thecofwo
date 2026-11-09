@@ -11,10 +11,10 @@ import { mediaUrl, siteUrl } from '@/lib/utils'
 
 import './styles.css'
 
-const archivo = Archivo({ subsets: ['latin'], axes: ['wdth'], variable: '--font-archivo', display: 'swap' })
+const archivo = Archivo({ subsets: ['latin'], axes: ['wdth'], style: ['normal', 'italic'], variable: '--font-archivo', display: 'swap' })
 const geist = Geist({ subsets: ['latin'], variable: '--font-geist', display: 'swap' })
 
-export const viewport: Viewport = { themeColor: '#ffffff', colorScheme: 'light' }
+export const viewport: Viewport = { themeColor: '#f9f7f3', colorScheme: 'light' }
 
 export async function generateMetadata(): Promise<Metadata> {
   const s = await getSettings()

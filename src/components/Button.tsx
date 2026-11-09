@@ -4,7 +4,7 @@ import { SmartLink } from './SmartLink'
 
 type Props = {
   link?: { label?: string | null; url?: string | null; newTab?: boolean | null } | null
-  variant?: 'primary' | 'ghost'
+  variant?: 'primary' | 'ghost' | 'fire'
   className?: string
 }
 

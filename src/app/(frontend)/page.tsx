@@ -3,19 +3,20 @@ import type { Metadata } from 'next'
 import {
   Closing,
   GalleryStrip,
-  Gathering,
+  GatheringBand,
   Hero,
-  JoinUs,
   LatestMessage,
   LatestPosts,
-  Marquee,
-  Pillars,
+  Leaders,
+  Partner,
+  Statement,
   Testimonies,
+  Ticker,
   UpcomingEvents,
-  Welcome,
+  VisitCards,
 } from '@/components/home/sections'
 import { getGlobal, getPayloadClient, getSettings, publishedWhere } from '@/lib/payload'
-import { mediaUrl } from '@/lib/utils'
+import { mediaList, mediaUrl } from '@/lib/utils'
 
 export const revalidate = 3600
 
@@ -36,16 +37,18 @@ export default async function HomePage() {
   const published = await publishedWhere()
   const now = new Date().toISOString()
 
-  const [home, settings, posts, events, testimonies, sermons] = await Promise.all([
+  const [home, settings, about, give, posts, events, testimonies, sermons] = await Promise.all([
     getGlobal('home-page'),
     getSettings(),
+    getGlobal('about-page'),
+    getGlobal('give-page'),
     payload.find({ collection: 'posts', where: published, sort: '-publishedAt', limit: 3, depth: 1 }),
     payload.find({
       collection: 'events',
       where: { and: [published, { or: [{ endDate: { greater_than_equal: now } }, { startDate: { greater_than_equal: now } }] }] },
       sort: 'startDate',
       limit: 3,
-      depth: 0,
+      depth: 1,
     }),
     payload.find({ collection: 'testimonies', where: { show: { equals: true } }, sort: 'order', limit: 8, depth: 0 }),
     payload.find({ collection: 'sermons', where: published, sort: '-date', limit: 1, depth: 1 }),
@@ -53,15 +56,21 @@ export default async function HomePage() {
 
   return (
     <>
-      <Hero hero={home.hero} />
-      <Marquee text={settings.ticker} />
-      <Welcome welcome={home.welcome} stats={home.stats} />
-      <JoinUs visit={home.visit} settings={settings} />
-      <Pillars settings={settings} />
-      <Gathering gathering={home.gathering} />
+      <Hero hero={home.hero} settings={settings} />
+      <VisitCards
+        visit={home.visit}
+        connect={home.connect}
+        fallbackImage={mediaList(home.gathering?.images)[1]}
+        settings={settings}
+      />
+      <Statement welcome={home.welcome} settings={settings} />
+      <GatheringBand gathering={home.gathering} />
       <LatestMessage section={home.sermonsSection} sermon={sermons.docs[0]} settings={settings} />
       <UpcomingEvents section={home.eventsSection} events={events.docs} />
+      <Ticker text={settings.ticker} />
+      <Leaders leaders={about.leaders} />
       <Testimonies section={home.testimoniesSection} items={testimonies.docs} />
+      <Partner give={give} />
       <LatestPosts section={home.blogSection} posts={posts.docs} />
       <GalleryStrip section={home.gallerySection} />
       <Closing closing={home.closing} />

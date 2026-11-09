@@ -2,34 +2,40 @@
 
 /*
   COFWO design tokens
-  Theme: light and welcoming. One accent colour (COFWO red).
-  Dark is used only for photographic bands (hero, page banners, closing invitation, footer):
+  Theme: warm, photo-led and welcoming. One accent colour (COFWO red).
+  Dark is used only for bands (hero, page banners, The Gathering, leadership, closing, footer):
   wrap those in `.theme-dark` and the same colour names switch to their dark values.
-  Shapes: buttons are full pills, photos and panels use --radius-xl (20px), inputs use 12px.
+  Shapes: buttons are full pills, photos use --radius-xl (24px), inputs use 12px.
 */
 @theme {
-  --color-ink: #fafafa; /* page background */
-  --color-ink-2: #f3f3f4; /* alternate section / input background */
-  --color-ink-3: #e7e7ea; /* image placeholders, chips */
-  --color-ink-4: #d4d4d8;
+  --color-ink: #f9f7f3; /* page background: warm off-white */
+  --color-ink-2: #f1eee8; /* alternate section / input background */
+  --color-ink-3: #e5e1d9; /* image placeholders, chips */
+  --color-ink-4: #d3cec4;
   --color-card: #ffffff;
-  --color-fg: #18181b; /* headings and body text */
-  --color-prose: #2b2b31; /* long-form reading text */
-  --color-muted: #52525b; /* secondary text, 7:1 on page */
-  --color-subtle: #6b6b74; /* tertiary text, 5:1 on page */
+  --color-fg: #121212; /* headings and body text */
+  --color-prose: #2a2a2a; /* long-form reading text */
+  --color-muted: #4f4d49; /* secondary text, 7:1 on page */
+  --color-subtle: #67645e; /* tertiary text, 5:1 on page */
   --color-fire: #c8101c; /* brand red: buttons, accents */
   --color-fire-hover: #a80d17;
   --color-fire-soft: #b40f1a; /* red used for small text on light backgrounds */
-  --color-line: rgb(24 24 27 / 0.1);
-  --color-line-strong: rgb(24 24 27 / 0.2);
+  --color-line: rgb(18 18 18 / 0.1);
+  --color-line-strong: rgb(18 18 18 / 0.22);
 
   --font-display: var(--font-archivo), system-ui, sans-serif;
   --font-sans: var(--font-geist), system-ui, -apple-system, 'Segoe UI', sans-serif;
 
-  --radius-xl: 20px;
+  --radius-xl: 24px;
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 
   --animate-marquee: marquee 38s linear infinite;
+  --animate-marquee-slow: marquee 60s linear infinite;
+  --animate-marquee-rev: marquee-rev 60s linear infinite;
+  @keyframes marquee-rev {
+    from { transform: translateX(-50%); }
+    to { transform: translateX(0); }
+  }
   @keyframes marquee {
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }
@@ -38,11 +44,11 @@
 
 /* Dark photographic bands */
 .theme-dark {
-  --color-ink: #111113;
-  --color-ink-2: #19191c;
-  --color-ink-3: #26262a;
-  --color-ink-4: #34343a;
-  --color-card: #19191c;
+  --color-ink: #101010;
+  --color-ink-2: #1a1a1a;
+  --color-ink-3: #262626;
+  --color-ink-4: #343434;
+  --color-card: #1a1a1a;
   --color-fg: #fafafa;
   --color-prose: #e4e4e7;
   --color-muted: #c4c4cc;
@@ -98,10 +104,24 @@
   /* Headings: sentence case, heavy weight, tight tracking */
   .display {
     font-family: var(--font-display);
-    font-weight: 750;
-    letter-spacing: -0.03em;
-    line-height: 1.04;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1;
     text-wrap: balance;
+  }
+  /* One softer italic word inside a heavy heading, e.g. "Set free by the *Spirit*" */
+  .display em { font-style: italic; font-weight: 400; letter-spacing: -0.03em; padding-right: 0.04em; }
+
+  /* Oversized scrolling statement */
+  .mega {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-stretch: 112%;
+    text-transform: uppercase;
+    letter-spacing: -0.03em;
+    line-height: 0.9;
+    font-size: clamp(4rem, 13vw, 12.5rem);
+    white-space: nowrap;
   }
 
   .eyebrow {
@@ -122,9 +142,11 @@
     gap: 0.6rem;
     white-space: nowrap;
     border-radius: 999px;
-    padding: 0.95rem 1.6rem;
-    font-weight: 600;
-    font-size: 0.97rem;
+    padding: 1.05rem 1.9rem;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     line-height: 1;
     transition:
       background-color 0.25s var(--ease-out-expo),
@@ -133,8 +155,11 @@
       transform 0.2s var(--ease-out-expo);
   }
   .btn:active { transform: translateY(1px) scale(0.98); }
-  .btn-primary { background: var(--color-fire); color: #fff; }
-  .btn-primary:hover { background: var(--color-fire-hover); }
+  /* Primary is black on light sections and white on dark bands */
+  .btn-primary { background: var(--color-fg); color: var(--color-ink); }
+  .btn-primary:hover { background: var(--color-fire); color: #fff; }
+  .btn-fire { background: var(--color-fire); color: #fff; }
+  .btn-fire:hover { background: var(--color-fire-hover); }
   .btn-ghost {
     border: 1px solid var(--color-line-strong);
     color: var(--color-fg);
@@ -158,7 +183,7 @@
     background: var(--color-card);
     border: 1px solid var(--color-line);
     border-radius: var(--radius-xl);
-    box-shadow: 0 1px 2px rgb(24 24 27 / 0.04), 0 8px 24px -12px rgb(24 24 27 / 0.12);
+    box-shadow: 0 1px 2px rgb(60 50 30 / 0.04), 0 10px 30px -16px rgb(60 50 30 / 0.16);
   }
   .theme-dark .card { box-shadow: none; }
 
@@ -220,3 +245,6 @@
   .js [data-reveal] { opacity: 1; transform: none; }
   .animate-marquee { animation: none !important; }
 }
+
+/* A dark band at the very end of a page runs straight into the dark footer */
+main:has(> .flush-footer:last-child) + footer { margin-top: 0; }

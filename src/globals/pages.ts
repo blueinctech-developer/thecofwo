@@ -136,6 +136,11 @@ export const HomePage = pageGlobal('home-page', 'Homepage', 'The sections of the
             { name: 'image', type: 'upload', relationTo: 'media' },
             linkGroup('link', 'Button'),
           ]),
+          section('connect', 'Second card (beside Join us)', [
+            { name: 'body', type: 'textarea' },
+            { name: 'image', type: 'upload', relationTo: 'media' },
+            linkGroup('link', 'Button'),
+          ]),
         ],
       },
       {

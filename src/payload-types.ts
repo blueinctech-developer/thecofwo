@@ -1312,6 +1312,20 @@ export interface HomePage {
       newTab?: boolean | null;
     };
   };
+  connect?: {
+    eyebrow?: string | null;
+    heading?: string | null;
+    body?: string | null;
+    image?: (number | null) | Media;
+    link?: {
+      label?: string | null;
+      /**
+       * A page on this site such as /about-us, or a full web address.
+       */
+      url?: string | null;
+      newTab?: boolean | null;
+    };
+  };
   sermonsSection?: {
     eyebrow?: string | null;
     heading?: string | null;
@@ -1799,6 +1813,21 @@ export interface HomePageSelect<T extends boolean = true> {
             };
       };
   visit?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        body?: T;
+        image?: T;
+        link?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              newTab?: T;
+            };
+      };
+  connect?:
     | T
     | {
         eyebrow?: T;
