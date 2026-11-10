@@ -11,7 +11,6 @@ import {
   Partner,
   Statement,
   Testimonies,
-  Ticker,
   UpcomingEvents,
   VisitCards,
 } from '@/components/home/sections'
@@ -67,7 +66,6 @@ export default async function HomePage() {
       <GatheringBand gathering={home.gathering} />
       <LatestMessage section={home.sermonsSection} sermon={sermons.docs[0]} settings={settings} />
       <UpcomingEvents section={home.eventsSection} events={events.docs} />
-      <Ticker text={settings.ticker} />
       <Leaders leaders={about.leaders} />
       <Testimonies section={home.testimoniesSection} items={testimonies.docs} />
       <Partner give={give} />

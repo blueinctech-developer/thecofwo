@@ -9,9 +9,9 @@ import { useEffect, useRef, useState } from 'react'
 type NavLink = { label: string; url: string; newTab?: boolean | null }
 
 type Props = {
-  /** White logo, shown over the dark photo band at the top of every page */
+  /** White logo (unused now the header is always white; kept so the layout's props stay the same) */
   logo: string
-  /** Colour logo, shown once the header turns solid */
+  /** Colour logo shown on the white header */
   logoOnLight: string
   siteName: string
   links: NavLink[]
@@ -19,13 +19,13 @@ type Props = {
   announcement?: { text: string; link?: NavLink | null } | null
 }
 
-export function Header({ logo, logoOnLight, siteName, links, cta, announcement }: Props) {
+export function Header({ logoOnLight, siteName, links, cta, announcement }: Props) {
   const [open, setOpen] = useState(false)
   const [solid, setSolid] = useState(false)
   const sentinel = useRef<HTMLDivElement>(null)
   const pathname = usePathname()
 
-  // Solid header once the top of the page has scrolled out of view (no scroll listener needed).
+  // Soft shadow once the top of the page has scrolled out of view (no scroll listener needed).
   useEffect(() => {
     const el = sentinel.current
     if (!el) return
@@ -42,7 +42,6 @@ export function Header({ logo, logoOnLight, siteName, links, cta, announcement }
   }, [open])
 
   const isActive = (url: string) => url !== '/' && pathname?.startsWith(url)
-  const light = solid || open
 
   return (
     <>
@@ -50,7 +49,7 @@ export function Header({ logo, logoOnLight, siteName, links, cta, announcement }
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[80] focus:rounded-full focus:bg-fire focus:px-4 focus:py-2 focus:text-white">
         Skip to content
       </a>
-      <header className="fixed inset-x-0 top-0 z-50">
+      <header className="sticky inset-x-0 top-0 z-50">
         {announcement?.text && (
           <div className="bg-fire text-center text-sm font-medium text-white">
             <div className="container-x py-2">
@@ -71,16 +70,14 @@ export function Header({ logo, logoOnLight, siteName, links, cta, announcement }
           </div>
         )}
         <div
-          className={`transition-[background-color,border-color,box-shadow] duration-500 ${
-            light
-              ? 'border-b border-line bg-ink/90 shadow-[0_6px_24px_-16px_rgb(24_24_27/0.35)] backdrop-blur-xl'
-              : 'theme-dark border-b border-transparent bg-gradient-to-b from-black/40 to-transparent'
+          className={`border-b border-line bg-white transition-shadow duration-300 ${
+            solid && !open ? 'shadow-[0_8px_24px_-18px_rgb(18_18_18/0.35)]' : ''
           }`}
         >
-          <div className={`container-x flex items-center justify-between gap-6 transition-[height] duration-500 ${light ? 'h-[72px]' : 'h-[88px]'}`}>
+          <div className={"container-x flex h-[72px] items-center justify-between gap-6 md:h-[84px]"}>
             <Link href="/" className="relative z-10 shrink-0" aria-label={`${siteName}, home`}>
               <img
-                src={light ? logoOnLight : logo}
+                src={logoOnLight}
                 alt={siteName}
                 width={585}
                 height={138}
@@ -132,7 +129,7 @@ export function Header({ logo, logoOnLight, siteName, links, cta, announcement }
         <div
           id="mobile-menu"
           hidden={!open}
-          className="fixed inset-0 top-0 -z-10 overflow-y-auto bg-ink px-5 pb-10 pt-28 lg:hidden"
+          className="fixed inset-0 top-0 -z-10 overflow-y-auto bg-white px-5 pb-10 pt-28 lg:hidden"
         >
           <nav aria-label="Mobile">
             <ul className="space-y-1">

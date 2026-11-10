@@ -29,7 +29,7 @@ export function PageBanner({ title, eyebrow, intro, image, compact, children }: 
             : 'bg-[radial-gradient(70%_120%_at_10%_110%,rgb(200_16_28/0.45),transparent_60%),linear-gradient(160deg,#1d1d21,#111113)]'
         }`}
       />
-      <div className="container-x pb-12 pt-36 md:pb-16">
+      <div className="container-x pb-12 pt-16 md:pb-16">
         {eyebrow && <p className="eyebrow mb-4">{eyebrow}</p>}
         <h1 className="display max-w-[20ch] text-[2.6rem] sm:text-6xl lg:text-[4.25rem]">{title}</h1>
         {intro && <p className="mt-5 max-w-[56ch] text-lg text-fg/90 md:text-xl">{intro}</p>}

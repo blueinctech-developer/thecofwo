@@ -5,6 +5,7 @@ import React from 'react'
 import { Footer } from '@/components/layout/Footer'
 import { Header } from '@/components/layout/Header'
 import { PreviewBar } from '@/components/PreviewBar'
+import { WhatsAppButton } from '@/components/WhatsAppButton'
 import { RevealObserver } from '@/components/Reveal'
 import { getNavigation, getPayloadClient, getSettings, isPreview } from '@/lib/payload'
 import { mediaUrl, siteUrl } from '@/lib/utils'
@@ -99,6 +100,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           logo={logo}
           extraLinks={footerPages.docs.map((p) => ({ label: p.title, url: `/${p.slug}` }))}
         />
+        <WhatsAppButton number={settings.whatsappNumber} message={settings.whatsappMessage} enabled={settings.whatsappEnabled} />
         <RevealObserver />
         {preview && <PreviewBar />}
       </body>

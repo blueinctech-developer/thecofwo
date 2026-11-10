@@ -1,4 +1,4 @@
-import { ArrowCircleRight, ArrowRight, ArrowUpRight, Quotes } from '@phosphor-icons/react/dist/ssr'
+import { ArrowRight, ArrowUpRight, Quotes } from '@phosphor-icons/react/dist/ssr'
 import Link from 'next/link'
 
 import type { AboutPage, Event, GivePage, HomePage, Post, Sermon, SiteSetting, Testimony } from '@/payload-types'
@@ -11,87 +11,60 @@ import { PostCard } from '../PostCard'
 import { RichText } from '../RichText'
 import { socialIcon } from '../socialIcons'
 import { VideoEmbed } from '../VideoEmbed'
+import { HeroSlider, type HeroSlide } from './HeroSlider'
 
 const delay = (n: number) => ({ '--d': n }) as React.CSSProperties
-const rise = (n: number) => ({ '--i': n }) as React.CSSProperties
 
 type Time = NonNullable<SiteSetting['serviceTimes']>[number]
 const timeLine = (t: Time) => [t.day, t.time].filter(Boolean).join(' at ')
 
-/* ---------- Hero: full-bleed photo, one big statement and a "when we meet" chip ---------- */
+/* ---------- Hero: full-bleed photo slider, one big statement and a "when we meet" chip ---------- */
 export function Hero({ hero: maybeHero, settings }: { hero?: HomePage['hero'] | null; settings: SiteSetting }) {
   // Before any content is entered (e.g. the very first deploy) fall back to the ministry name.
   const hero = maybeHero ?? ({} as HomePage['hero'])
-  const { before, match, after } = splitHighlight(hero.heading || settings.siteName, hero.highlight)
+  const mainHeading = hero.heading || settings.siteName
   const times = settings.serviceTimes ?? []
 
   // With service times entered the chip says when we meet; otherwise it carries the subheading and main button.
   const chip = times.length
     ? { top: times.slice(0, 2).map(timeLine).join('  &  '), bottom: settings.address?.split('\n')[0] || 'Plan your visit', href: '#visit' }
-    : { top: hero.subheading || hero.eyebrow, bottom: hero.primary?.label || 'Plan your visit', href: hero.primary?.url || '#visit' }
+    : { top: hero.subheading || hero.eyebrow || '', bottom: hero.primary?.label || 'Plan your visit', href: hero.primary?.url || '#visit' }
+
+  // Slide 1 is the main hero; extra slides keep the main heading and chip unless they set their own.
+  const slides: HeroSlide[] = [
+    {
+      image: hero.image,
+      videoUrl: hero.videoUrl,
+      poster: mediaUrl(hero.image, 'hero'),
+      eyebrow: times.length ? hero.eyebrow : null,
+      ...splitHighlight(mainHeading, hero.highlight),
+      chip,
+    },
+    ...(hero.slides ?? [])
+      .filter((s) => s.image && typeof s.image === 'object')
+      .map((s) => {
+        const own = Boolean(s.heading)
+        const link = s.link?.url && s.link.label ? { top: s.subheading || s.link.label, bottom: s.subheading ? s.link.label : '', href: s.link.url } : null
+        return {
+          image: s.image,
+          eyebrow: own ? null : times.length ? hero.eyebrow : null,
+          ...(own ? splitHighlight(s.heading!, s.highlight) : splitHighlight(mainHeading, hero.highlight)),
+          chip: link ?? (own ? null : chip),
+        }
+      }),
+  ]
   const socials = settings.socials ?? []
 
   return (
-    <section className="theme-dark relative isolate flex min-h-[100dvh] items-center overflow-hidden bg-ink">
-      {hero.videoUrl ? (
-        <video
-          className="absolute inset-0 -z-20 h-full w-full object-cover"
-          src={hero.videoUrl}
-          autoPlay
-          muted
-          loop
-          playsInline
-          poster={mediaUrl(hero.image, 'hero')}
-        />
-      ) : (
-        <Media media={hero.image} priority sizes="100vw" className="hero-zoom absolute inset-0 -z-20 h-full w-full object-cover" />
-      )}
-      <div
-        aria-hidden
-        className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(0_0_0/0.45)_0%,rgb(0_0_0/0.3)_35%,rgb(0_0_0/0.45)_70%,rgb(0_0_0/0.75)_100%)]"
-      />
-
-      <div className="container-x pb-32 pt-36">
-        <div className="mx-auto max-w-5xl lg:pl-10">
-          {hero.eyebrow && times.length > 0 && (
-            <p className="hero-in mb-6 text-xs font-bold uppercase tracking-[0.18em] text-white/80" style={rise(0)}>
-              {hero.eyebrow}
-            </p>
-          )}
-          <h1
-            className="display hero-in text-[3.4rem] leading-[0.95] sm:text-7xl lg:text-[7.25rem]"
-            style={rise(1)}
-          >
-            {before}
-            {match && <em>{match}</em>}
-            {after}
-          </h1>
-
-          {chip.top && (
-            <Link
-              href={chip.href}
-              {...(/^https?:\/\//.test(chip.href) ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-              className="hero-in group mt-10 inline-flex items-center gap-8 bg-black/70 px-5 py-4 backdrop-blur-md transition-colors hover:bg-black/85"
-              style={rise(2)}
-            >
-              <span className="text-[0.82rem] font-bold uppercase leading-snug tracking-[0.04em] text-white">
-                {chip.top}
-                <br />
-                <span className="text-white/75">{chip.bottom}</span>
-              </span>
-              <ArrowCircleRight size={30} weight="light" className="shrink-0 transition-transform group-hover:translate-x-1" aria-hidden />
-            </Link>
-          )}
-        </div>
-      </div>
-
-      <div className="absolute inset-x-0 bottom-0">
-        <div className="container-x flex items-center justify-between gap-6 pb-8">
+    <HeroSlider
+      slides={slides}
+      footer={
+        <div className="flex items-center justify-between gap-8">
           {hero.secondary?.url && hero.secondary.label ? (
             <Link
               href={hero.secondary.url}
               {...(hero.secondary.newTab ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-              className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.14em] text-white/85 hover:text-white"
+              className="inline-flex items-center gap-1.5 whitespace-nowrap py-3 text-xs font-bold uppercase tracking-[0.14em] text-white/85 hover:text-white"
             >
               {hero.secondary.label}
               <ArrowUpRight size={14} weight="bold" aria-hidden />
@@ -100,13 +73,13 @@ export function Hero({ hero: maybeHero, settings }: { hero?: HomePage['hero'] | 
             <span />
           )}
           {socials.length > 0 && (
-            <ul className="flex items-center gap-5" aria-label="Social media">
+            <ul className="hidden items-center gap-5 sm:flex" aria-label="Social media">
               {socials.map((s) => {
                 const Icon = socialIcon(s.platform)
                 return Icon ? (
                   <li key={s.id ?? s.url}>
                     <a href={s.url} target="_blank" rel="noopener noreferrer" aria-label={s.platform ?? 'Social'} className="text-white/85 hover:text-white">
-                      <Icon size={30} aria-hidden />
+                      <Icon size={26} aria-hidden />
                     </a>
                   </li>
                 ) : null
@@ -114,8 +87,8 @@ export function Hero({ hero: maybeHero, settings }: { hero?: HomePage['hero'] | 
             </ul>
           )}
         </div>
-      </div>
-    </section>
+      }
+    />
   )
 }
 
@@ -470,28 +443,6 @@ export function UpcomingEvents({ section, events }: { section: HomePage['eventsS
         <Button link={{ label: 'All events', url: '/events' }} variant="ghost" />
       </div>
     </section>
-  )
-}
-
-/* ---------- Big red scrolling banner ---------- */
-export function Ticker({ text }: { text?: string | null }) {
-  if (!text) return null
-  const items = Array.from({ length: 6 })
-  return (
-    <div className="relative overflow-hidden bg-fire py-6 text-white md:py-8" role="img" aria-label={text}>
-      <div className="animate-marquee flex w-max" aria-hidden>
-        {[0, 1].map((half) => (
-          <div key={half} className="flex shrink-0">
-            {items.map((_, i) => (
-              <span key={i} className="display flex items-center gap-[0.45em] pr-[0.45em] text-5xl uppercase md:text-7xl">
-                {text}
-                <span className="inline-block h-[0.18em] w-[0.18em] rounded-full bg-white" />
-              </span>
-            ))}
-          </div>
-        ))}
-      </div>
-    </div>
   )
 }
 

@@ -268,6 +268,22 @@ async function main() {
         image: await img('Slider.jpg'),
         primary: { label: 'Discover COFWO', url: '/about-us' },
         secondary: { label: 'The Gathering 2026', url: GATHERING_URL, newTab: true },
+        slides: [
+          {
+            image: await img('swi-5787-scaled-1.jpg'),
+            heading: 'Igniting hearts, transforming nations',
+            highlight: 'transforming nations',
+            link: { label: 'Discover COFWO', url: '/about-us' },
+          },
+          {
+            image: await img('gallery/FB_IMG_1774528902691.jpg'),
+            heading: 'Encounter the fire of God’s love and power',
+            highlight: 'fire',
+            subheading: 'Need prayer?',
+            link: { label: 'Send a prayer request', url: '/contact-us' },
+          },
+          { image: await img('slide-2cofwo.jpg') },
+        ],
       },
       welcome: {
         heading: 'Igniting hearts, transforming nations',

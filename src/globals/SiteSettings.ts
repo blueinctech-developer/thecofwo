@@ -66,6 +66,49 @@ export const SiteSettings: GlobalConfig = {
             },
             { name: 'mapUrl', type: 'text', label: 'Map link', admin: { description: 'A Google Maps link (optional).' } },
             {
+              type: 'collapsible',
+              label: 'WhatsApp chat button',
+              admin: { initCollapsed: false, description: 'A green WhatsApp button floats in the corner of every page once a number is entered.' },
+              fields: [
+                {
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'whatsappNumber',
+                      type: 'text',
+                      label: 'WhatsApp number',
+                      admin: {
+                        width: '50%',
+                        placeholder: '+234 801 234 5678',
+                        description: 'Include the country code. Leave empty to hide the button.',
+                      },
+                      validate: (v: string | null | undefined) => {
+                        if (!v) return true
+                        const digits = v.replace(/\D/g, '')
+                        return digits.length >= 8 && digits.length <= 15 && /^[+\d\s()-]+$/.test(v.trim())
+                          ? true
+                          : 'Please enter the full number with country code, e.g. +234 801 234 5678'
+                      },
+                    },
+                    {
+                      name: 'whatsappEnabled',
+                      type: 'checkbox',
+                      label: 'Show the WhatsApp button',
+                      defaultValue: true,
+                      admin: { width: '50%', style: { alignSelf: 'flex-end', paddingBottom: '0.6rem' } },
+                    },
+                  ],
+                },
+                {
+                  name: 'whatsappMessage',
+                  type: 'text',
+                  label: 'Pre-filled message (optional)',
+                  defaultValue: 'Hello COFWO, I would like to know more.',
+                  admin: { description: 'The text that appears in the chat when someone taps the button. They can change it before sending.' },
+                },
+              ],
+            },
+            {
               name: 'serviceTimes',
               type: 'array',
               label: 'Service times',
@@ -143,7 +186,7 @@ export const SiteSettings: GlobalConfig = {
                 { name: 'body', type: 'textarea' },
               ],
             },
-            { name: 'ticker', type: 'text', label: 'Scrolling banner text', defaultValue: 'Jesus is Lord' },
+            { name: 'ticker', type: 'text', defaultValue: 'Jesus is Lord', admin: { hidden: true } },
           ],
         },
         {

@@ -1228,6 +1228,26 @@ export interface HomePage {
       url?: string | null;
       newTab?: boolean | null;
     };
+    /**
+     * Add photos to turn the top of the homepage into a slider. The heading and photo above are the first slide. Leave a slide’s heading empty to keep the main heading over that photo.
+     */
+    slides?:
+      | {
+          image: number | Media;
+          heading?: string | null;
+          highlight?: string | null;
+          subheading?: string | null;
+          link?: {
+            label?: string | null;
+            /**
+             * A page on this site such as /about-us, or a full web address.
+             */
+            url?: string | null;
+            newTab?: boolean | null;
+          };
+          id?: string | null;
+        }[]
+      | null;
   };
   welcome?: {
     eyebrow?: string | null;
@@ -1635,6 +1655,15 @@ export interface SiteSetting {
    */
   mapUrl?: string | null;
   /**
+   * Include the country code. Leave empty to hide the button.
+   */
+  whatsappNumber?: string | null;
+  whatsappEnabled?: boolean | null;
+  /**
+   * The text that appears in the chat when someone taps the button. They can change it before sending.
+   */
+  whatsappMessage?: string | null;
+  /**
    * Shown on the homepage, the Contact page and the footer. Leave empty to hide.
    */
   serviceTimes?:
@@ -1773,6 +1802,22 @@ export interface HomePageSelect<T extends boolean = true> {
               label?: T;
               url?: T;
               newTab?: T;
+            };
+        slides?:
+          | T
+          | {
+              image?: T;
+              heading?: T;
+              highlight?: T;
+              subheading?: T;
+              link?:
+                | T
+                | {
+                    label?: T;
+                    url?: T;
+                    newTab?: T;
+                  };
+              id?: T;
             };
       };
   welcome?:
@@ -2092,6 +2137,9 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   phone?: T;
   address?: T;
   mapUrl?: T;
+  whatsappNumber?: T;
+  whatsappEnabled?: T;
+  whatsappMessage?: T;
   serviceTimes?:
     | T
     | {

@@ -80,6 +80,25 @@ export const HomePage = pageGlobal('home-page', 'Homepage', 'The sections of the
               },
               linkGroup('primary', 'Main button'),
               linkGroup('secondary', 'Second button'),
+              {
+                name: 'slides',
+                type: 'array',
+                label: 'More slides',
+                labels: { singular: 'Slide', plural: 'Slides' },
+                maxRows: 5,
+                admin: {
+                  initCollapsed: true,
+                  description:
+                    'Add photos to turn the top of the homepage into a slider. The heading and photo above are the first slide. Leave a slide’s heading empty to keep the main heading over that photo.',
+                },
+                fields: [
+                  { name: 'image', type: 'upload', relationTo: 'media', required: true, label: 'Photo' },
+                  { name: 'heading', type: 'text' },
+                  { name: 'highlight', type: 'text', label: 'Words to highlight' },
+                  { name: 'subheading', type: 'textarea', label: 'Short line (shown with the button)' },
+                  linkGroup('link', 'Button'),
+                ],
+              },
             ],
           },
         ],
