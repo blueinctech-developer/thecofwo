@@ -267,7 +267,6 @@ async function main() {
         subheading: 'Encounter the fire of God’s love and power.',
         image: await img('Slider.jpg'),
         primary: { label: 'Discover COFWO', url: '/about-us' },
-        secondary: { label: 'The Gathering 2026', url: GATHERING_URL, newTab: true },
         slides: [
           {
             image: await img('swi-5787-scaled-1.jpg'),

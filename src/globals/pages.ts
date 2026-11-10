@@ -1,7 +1,7 @@
 import type { Field, GlobalConfig } from 'payload'
 
 import { anyone, staff } from '../access'
-import { linkGroup } from '../fields/link'
+import { linkFields, linkGroup } from '../fields/link'
 import { revalidateGlobal } from '../hooks/revalidate'
 
 const pageGlobal = (slug: string, label: string, description: string, fields: Field[]): GlobalConfig => ({
@@ -79,7 +79,8 @@ export const HomePage = pageGlobal('home-page', 'Homepage', 'The sections of the
                 admin: { description: 'A direct link to a short .mp4 clip. It plays muted behind the heading.' },
               },
               linkGroup('primary', 'Main button'),
-              linkGroup('secondary', 'Second button'),
+              // No longer shown on the site; hidden so staff are not confused.
+              { name: 'secondary', label: 'Second button', type: 'group', fields: linkFields, admin: { hidden: true } },
               {
                 name: 'slides',
                 type: 'array',

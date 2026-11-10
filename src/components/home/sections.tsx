@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight, Quotes } from '@phosphor-icons/react/dist/ssr'
+import { ArrowRight, Quotes } from '@phosphor-icons/react/dist/ssr'
 import Link from 'next/link'
 
 import type { AboutPage, Event, GivePage, HomePage, Post, Sermon, SiteSetting, Testimony } from '@/payload-types'
@@ -59,34 +59,20 @@ export function Hero({ hero: maybeHero, settings }: { hero?: HomePage['hero'] | 
     <HeroSlider
       slides={slides}
       footer={
-        <div className="flex items-center justify-between gap-8">
-          {hero.secondary?.url && hero.secondary.label ? (
-            <Link
-              href={hero.secondary.url}
-              {...(hero.secondary.newTab ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-              className="inline-flex items-center gap-1.5 whitespace-nowrap py-3 text-xs font-bold uppercase tracking-[0.14em] text-white/85 hover:text-white"
-            >
-              {hero.secondary.label}
-              <ArrowUpRight size={14} weight="bold" aria-hidden />
-            </Link>
-          ) : (
-            <span />
-          )}
-          {socials.length > 0 && (
-            <ul className="hidden items-center gap-5 sm:flex" aria-label="Social media">
-              {socials.map((s) => {
-                const Icon = socialIcon(s.platform)
-                return Icon ? (
-                  <li key={s.id ?? s.url}>
-                    <a href={s.url} target="_blank" rel="noopener noreferrer" aria-label={s.platform ?? 'Social'} className="text-white/85 hover:text-white">
-                      <Icon size={26} aria-hidden />
-                    </a>
-                  </li>
-                ) : null
-              })}
-            </ul>
-          )}
-        </div>
+        socials.length > 0 && (
+          <ul className="hidden items-center justify-end gap-5 sm:flex" aria-label="Social media">
+            {socials.map((s) => {
+              const Icon = socialIcon(s.platform)
+              return Icon ? (
+                <li key={s.id ?? s.url}>
+                  <a href={s.url} target="_blank" rel="noopener noreferrer" aria-label={s.platform ?? 'Social'} className="text-white/85 hover:text-white">
+                    <Icon size={26} aria-hidden />
+                  </a>
+                </li>
+              ) : null
+            })}
+          </ul>
+        )
       }
     />
   )
