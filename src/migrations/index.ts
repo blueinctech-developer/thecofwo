@@ -3,6 +3,7 @@ import * as migration_20261109_133639_sermons_visit_timezones from './20261109_1
 import * as migration_20261109_154044_home_connect_card from './20261109_154044_home_connect_card';
 import * as migration_20261109_164657_whatsapp_button from './20261109_164657_whatsapp_button';
 import * as migration_20261110_082327_hero_slides from './20261110_082327_hero_slides';
+import * as migration_20261110_132622_media_storage_fields from './20261110_132622_media_storage_fields';
 
 export const migrations = [
   {
@@ -28,6 +29,11 @@ export const migrations = [
   {
     up: migration_20261110_082327_hero_slides.up,
     down: migration_20261110_082327_hero_slides.down,
-    name: '20261110_082327_hero_slides'
+    name: '20261110_082327_hero_slides',
+  },
+  {
+    up: migration_20261110_132622_media_storage_fields.up,
+    down: migration_20261110_132622_media_storage_fields.down,
+    name: '20261110_132622_media_storage_fields'
   },
 ];

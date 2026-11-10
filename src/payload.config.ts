@@ -120,6 +120,8 @@ export default buildConfig({
     // Without bucket details (local development) photos are saved to ./media instead.
     s3Storage({
       enabled: s3Enabled,
+      // Keep the plugin's columns in the schema even when it is off locally, so migrations match production.
+      alwaysInsertFields: true,
       bucket: s3.bucket,
       // The bucket is public, so photo links point straight at it: <endpoint>/<bucket>/<file>.
       collections: { media: { disablePayloadAccessControl: true } },
