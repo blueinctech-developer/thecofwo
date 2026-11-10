@@ -3,7 +3,7 @@ import { resendAdapter } from '@payloadcms/email-resend'
 import { importExportPlugin } from '@payloadcms/plugin-import-export'
 import { seoPlugin } from '@payloadcms/plugin-seo'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
-import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+import { s3Storage } from '@payloadcms/storage-s3'
 import path from 'path'
 import { buildConfig } from 'payload'
 import sharp from 'sharp'
@@ -29,7 +29,16 @@ const dirname = path.dirname(filename)
 
 // Vercel's Neon integration sets DATABASE_URL (and POSTGRES_URL); either works.
 const databaseUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL || ''
-const blobToken = process.env.BLOB_READ_WRITE_TOKEN
+// Photos live in a Neon Object Storage bucket (S3-compatible). Vercel reserves the AWS_* names,
+// so the S3_* names come first; AWS_* still works locally (e.g. from `neon env pull`).
+const s3 = {
+  endpoint: process.env.S3_ENDPOINT || process.env.AWS_ENDPOINT_URL_S3 || '',
+  region: process.env.S3_REGION || process.env.AWS_REGION || 'us-east-2',
+  bucket: process.env.S3_BUCKET || '',
+  accessKeyId: process.env.S3_ACCESS_KEY_ID || process.env.AWS_ACCESS_KEY_ID || '',
+  secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || process.env.AWS_SECRET_ACCESS_KEY || '',
+}
+const s3Enabled = Boolean(s3.endpoint && s3.bucket && s3.accessKeyId && s3.secretAccessKey)
 const serverUrl =
   process.env.NEXT_PUBLIC_SERVER_URL ||
   (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : '') ||
@@ -108,12 +117,18 @@ export default buildConfig({
       })
     : undefined,
   plugins: [
-    vercelBlobStorage({
-      enabled: Boolean(blobToken),
+    // Without bucket details (local development) photos are saved to ./media instead.
+    s3Storage({
+      enabled: s3Enabled,
+      bucket: s3.bucket,
+      // The bucket is public, so photo links point straight at it: <endpoint>/<bucket>/<file>.
       collections: { media: { disablePayloadAccessControl: true } },
-      token: blobToken || '',
-      // Uploads go straight from the browser to Blob, avoiding Vercel's 4.5 MB request limit.
-      clientUploads: true,
+      config: {
+        endpoint: s3.endpoint,
+        region: s3.region,
+        forcePathStyle: true,
+        credentials: { accessKeyId: s3.accessKeyId, secretAccessKey: s3.secretAccessKey },
+      },
     }),
     seoPlugin({
       collections: ['posts', 'pages', 'events', 'sermons'],

@@ -4,7 +4,7 @@
  *   npm run seed            only runs on an empty site
  *   npm run seed:reset deletes existing content (not messages, subscribers or users) and imports again
  *
- * Needs DATABASE_URL (and BLOB_READ_WRITE_TOKEN when importing into the live Vercel site).
+ * Needs DATABASE_URL (and the S3_* bucket settings when importing into the live site).
  */
 import config from '@payload-config'
 import { convertHTMLToLexical, editorConfigFactory } from '@payloadcms/richtext-lexical'

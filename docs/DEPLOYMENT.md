@@ -8,24 +8,34 @@ The whole site, including the admin, runs as one Vercel project. You need a Verc
 2. Framework: **Next.js** (detected). Leave the build command empty: Vercel runs `npm run vercel-build`, which applies database migrations and then builds.
 3. Don't deploy yet. Add the storage and settings below first.
 
-## 2. Add the database and photo storage
+## 2. Neon database and photo bucket
 
-In the project, open **Storage**:
+Both live in the **COFWO** project on Neon (region AWS US East 2), created directly in the Neon Console:
 
-1. **Create Database → Neon (Serverless Postgres)**. Connect it to all environments. This adds `DATABASE_URL`.
-2. **Create → Blob**. Connect it to all environments. This adds `BLOB_READ_WRITE_TOKEN`.
+- **Database:** Neon Console → COFWO → **Connect** → Postgres. Copy the *pooled* connection string.
+- **Photos:** the public bucket `cofwo` under **Object storage**. **Connect → Storage → .env** shows the endpoint. Create a credential (**Settings → Credentials**, scope `storage:write`) for the key ID and secret. The secret is shown once.
 
 ## 3. Environment variables
 
-In **Settings → Environment Variables**, add:
+In **Settings → Environment Variables**, add (all environments unless noted):
 
 | Name | Value |
 |---|---|
+| `DATABASE_URL` | The pooled Neon connection string. |
 | `PAYLOAD_SECRET` | A long random string (`node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`). Use a different one from local. |
+| `S3_ENDPOINT` | `https://br-lively-sound-bebangbn.storage.c-9.us-east-2.aws.neon.tech` |
+| `S3_REGION` | `us-east-2` |
+| `S3_BUCKET` | `cofwo` |
+| `S3_ACCESS_KEY_ID` | The credential's key ID (starts `nak_live_`). |
+| `S3_SECRET_ACCESS_KEY` | The credential's secret (starts `nsk_live_`). |
 | `SITE_TIMEZONE` | The ministry's timezone, e.g. `Africa/Lagos` (the default) or `Europe/London`. Dates and event times are shown in this zone. |
-| `NEXT_PUBLIC_SERVER_URL` | `https://thecofwo.org` for Production. For Preview, leave unset (the Vercel URL is used). |
+| `NEXT_PUBLIC_SERVER_URL` | `https://thecofwo.org` for Production once the domain is connected. Until then leave it unset (the Vercel URL is used). |
 | `RESEND_API_KEY` | Optional. Enables email alerts for new messages and signups. |
 | `EMAIL_FROM_ADDRESS` | Optional. A sender on a domain verified in Resend, e.g. `no-reply@thecofwo.org`. |
+
+Vercel reserves the `AWS_*` names, which is why the bucket settings use `S3_*`.
+
+Photos are limited to about 4 MB per upload on Vercel (its request size limit). Resize larger photos before uploading.
 
 Then **Deploy**. The first build creates all database tables.
 
@@ -40,7 +50,7 @@ vercel env pull .env.production.local
 npx dotenv-cli -e .env.production.local -- npm run seed
 ```
 
-This uploads the 61 photos to Vercel Blob and fills the pages, blog posts and gallery. It only runs on an empty site.
+This uploads the old site's photos to the Neon bucket and fills the pages, blog posts and gallery. It only runs on an empty site.
 
 ## 5. Create the first admin account
 
@@ -75,4 +85,4 @@ Commit the new file in `src/migrations/`. Vercel applies it on the next deploy.
 
 - **Email alerts:** add `RESEND_API_KEY`, then set the recipient in *Admin → Site settings → Forms & email*.
 - **Analytics:** enable Vercel Web Analytics in the project dashboard (no cookie banner needed).
-- **Backups:** Neon keeps point-in-time history; Blob files are kept until deleted in the admin.
+- **Backups:** Neon keeps point-in-time history for the database; bucket files are kept until deleted in the admin.

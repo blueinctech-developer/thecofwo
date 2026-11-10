@@ -4,8 +4,8 @@ Website and admin for **The Chariot of Fire World Outreach (COFWO)**.
 
 - **Website:** Next.js 16, hosted on Vercel
 - **Admin (`/admin`):** Payload CMS 3, running inside the same app
-- **Database:** Postgres (Neon through the Vercel integration)
-- **Photos:** Vercel Blob
+- **Database:** Postgres on Neon
+- **Photos:** Neon Object Storage (S3-compatible bucket)
 - **Email (optional):** Resend, for form notifications
 
 The previous static site is kept in [`legacy/`](legacy/) for reference. The seed script imports its content.

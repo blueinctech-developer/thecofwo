@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: {
     localPatterns: [{ pathname: '/api/media/file/**' }],
-    remotePatterns: [{ protocol: 'https', hostname: '*.public.blob.vercel-storage.com' }],
+    remotePatterns: [{ protocol: 'https', hostname: '*.storage.*.aws.neon.tech' }],
   },
   async headers() {
     return [{ source: '/:path*', headers: securityHeaders }]
