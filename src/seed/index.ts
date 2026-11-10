@@ -15,6 +15,8 @@ import { getPayload, type Payload } from 'payload'
 
 const LEGACY = path.resolve(process.cwd(), 'legacy')
 const force = process.argv.includes('--force') || process.env.SEED_FORCE === '1'
+// Copied per call (`{ ...ctx }`): the storage plugin keeps upload state on the context object,
+// so one shared object leaks file data from one photo into the next.
 const ctx = { disableRevalidate: true }
 const GATHERING_URL = 'https://thegatheringcof.org/'
 
@@ -33,8 +35,15 @@ async function main() {
     process.exit(0)
   }
   if (force) {
+    // Slide photos are required, so empty the slider before its photos are deleted (the import refills it).
+    const home = await payload.findGlobal({ slug: 'home-page', depth: 0 })
+    if (home.hero?.slides?.length) {
+      await payload.updateGlobal({ slug: 'home-page', data: { hero: { ...home.hero, slides: [] } }, context: { ...ctx } })
+    }
     for (const collection of ['posts', 'categories', 'pages', 'events', 'testimonies', 'albums', 'media'] as const) {
-      await payload.delete({ collection, where: { id: { exists: true } }, context: ctx })
+      // One at a time: a bulk delete runs every file-removal hook inside one transaction, which Postgres aborts.
+      const { docs } = await payload.find({ collection, limit: 0, depth: 0, pagination: false })
+      for (const doc of docs) await payload.delete({ collection, id: doc.id, context: { ...ctx } })
     }
     payload.logger.info('Removed existing content.')
   }
@@ -63,7 +72,7 @@ async function main() {
       collection: 'media',
       data: { alt: alt || altFor.get(key) || 'Photo from The Chariot of Fire World Outreach' },
       filePath,
-      context: ctx,
+      context: { ...ctx },
     })
     uploaded.set(key, doc.id)
     payload.logger.info(`Uploaded ${key}`)
@@ -75,7 +84,7 @@ async function main() {
   const faith = await payload.create({
     collection: 'categories',
     data: { title: 'Faith', slug: 'faith-2', description: 'Teaching on faith, purpose and the victorious Christian life.' },
-    context: ctx,
+    context: { ...ctx },
   })
 
   /* ---------- Blog posts ---------- */
@@ -105,7 +114,7 @@ async function main() {
         authorName: 'The COFWO Team',
         _status: 'published',
       },
-      context: ctx,
+      context: { ...ctx },
     })
     payload.logger.info(`Imported post: ${title}`)
   }
@@ -138,7 +147,7 @@ async function main() {
         showInFooter: true,
         _status: 'published',
       },
-      context: ctx,
+      context: { ...ctx },
     })
   }
 
@@ -158,7 +167,7 @@ async function main() {
       order: 0,
       _status: 'published',
     },
-    context: ctx,
+    context: { ...ctx },
   })
 
   /* ---------- Testimonies (hidden until the ministry confirms them) ---------- */
@@ -186,13 +195,13 @@ async function main() {
     },
   ]
   for (const [order, t] of testimonies.entries()) {
-    await payload.create({ collection: 'testimonies', data: { ...t, order, show: false }, context: ctx })
+    await payload.create({ collection: 'testimonies', data: { ...t, order, show: false }, context: { ...ctx } })
   }
 
   /* ---------- Site settings ---------- */
   await payload.updateGlobal({
     slug: 'site-settings',
-    context: ctx,
+    context: { ...ctx },
     data: {
       siteName: 'The Chariot of Fire World Outreach',
       shortName: 'COFWO',
@@ -228,7 +237,7 @@ async function main() {
   /* ---------- Menus ---------- */
   await payload.updateGlobal({
     slug: 'navigation',
-    context: ctx,
+    context: { ...ctx },
     data: {
       header: [
         { label: 'About Us', url: '/about-us' },
@@ -258,7 +267,7 @@ async function main() {
   const homeGallery = galleryImgs.slice(0, 8)
   await payload.updateGlobal({
     slug: 'home-page',
-    context: ctx,
+    context: { ...ctx },
     data: {
       hero: {
         eyebrow: 'Experience the delivering power of the Holy Spirit',
@@ -342,7 +351,7 @@ async function main() {
   ]
   await payload.updateGlobal({
     slug: 'about-page',
-    context: ctx,
+    context: { ...ctx },
     data: {
       banner: {
         title: 'About Us',
@@ -373,7 +382,7 @@ async function main() {
   /* ---------- Give page ---------- */
   await payload.updateGlobal({
     slug: 'give-page',
-    context: ctx,
+    context: { ...ctx },
     data: {
       banner: {
         title: 'Give',
@@ -395,7 +404,7 @@ async function main() {
   /* ---------- Contact page ---------- */
   await payload.updateGlobal({
     slug: 'contact-page',
-    context: ctx,
+    context: { ...ctx },
     data: {
       banner: {
         eyebrow: 'Get in touch with us',
