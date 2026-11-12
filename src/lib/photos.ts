@@ -16,7 +16,7 @@ export const toPhotos = (list: Media[]): LightboxPhoto[] =>
       ]
         .filter(Boolean)
         .join(', ') || undefined,
-      alt: m.alt,
+      alt: m.alt || '',
       width: m.sizes?.card?.width ?? m.width,
       height: m.sizes?.card?.height ?? m.height,
     }))

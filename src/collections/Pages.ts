@@ -15,7 +15,7 @@ export const Pages: CollectionConfig = {
     useAsTitle: 'title',
     group: 'Website pages',
     defaultColumns: ['title', 'slug', '_status', 'updatedAt'],
-    description: 'Extra pages such as the privacy policy. Each page is shown at thecofwo.org/<web address>.',
+    description: 'Extra pages such as a privacy policy. Tick "Link in footer" to link to one from every page.',
     preview: (doc) => (doc?.slug ? `/next/preview?path=/${doc.slug}` : null),
   },
   access: { read: publishedOrStaff, create: staff, update: staff, delete: staff },
@@ -23,10 +23,10 @@ export const Pages: CollectionConfig = {
   hooks: revalidateHooks,
   fields: [
     { name: 'title', type: 'text', required: true },
-    { name: 'eyebrow', type: 'text', label: 'Small heading above title' },
-    { name: 'intro', type: 'textarea', label: 'Introduction' },
-    { name: 'heroImage', type: 'upload', relationTo: 'media', label: 'Banner photo' },
+    { name: 'intro', type: 'textarea', label: 'Introduction (optional)' },
+    { name: 'heroImage', type: 'upload', relationTo: 'media', label: 'Banner photo (optional)' },
     { name: 'content', type: 'richText' },
+    { name: 'eyebrow', type: 'text', label: 'Small heading above title', admin: { hidden: true } },
     slugField(),
     {
       name: 'showInFooter',

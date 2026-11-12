@@ -7,7 +7,7 @@ import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { s3Storage } from '@payloadcms/storage-s3'
 import path from 'path'
 import nodemailer from 'nodemailer'
-import { buildConfig } from 'payload'
+import { buildConfig, type Config, type Field } from 'payload'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 
@@ -49,6 +49,17 @@ const ses = {
   secretAccessKey: process.env.SES_SECRET_ACCESS_KEY || '',
 }
 const sesEnabled = Boolean(ses.accessKeyId && ses.secretAccessKey)
+/** Runs last: hides the SEO plugin's group (pages fall back to their own title and text) and the API tab. */
+function simpleAdmin(config: Config): Config {
+  const hideMeta = (fields: Field[]): Field[] =>
+    fields.map((f) => ('name' in f && f.name === 'meta' && f.type === 'group' ? { ...f, admin: { ...f.admin, hidden: true } } : f))
+  return {
+    ...config,
+    collections: config.collections?.map((c) => ({ ...c, fields: hideMeta(c.fields), admin: { ...c.admin, hideAPIURL: true } })),
+    globals: config.globals?.map((g) => ({ ...g, admin: { ...g.admin, hideAPIURL: true } })),
+  }
+}
+
 const serverUrl =
   process.env.NEXT_PUBLIC_SERVER_URL ||
   (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : '') ||
@@ -83,7 +94,10 @@ export default buildConfig({
         Logo: '@/components/admin/Logo#Logo',
         Icon: '@/components/admin/Icon#Icon',
       },
-      beforeDashboard: ['@/components/admin/Welcome#Welcome', '@/components/admin/LaunchChecklist#LaunchChecklist'],
+      providers: ['@/components/admin/PasswordReveal#PasswordReveal'],
+      views: {
+        dashboard: { Component: '@/components/admin/Dashboard#Dashboard' },
+      },
     },
     livePreview: {
       url: ({ data, collectionConfig, globalConfig }) => {
@@ -107,7 +121,8 @@ export default buildConfig({
       ],
     },
   },
-  collections: [Posts, Categories, Pages, Sermons, Events, Testimonies, Albums, Media, Messages, Subscribers, Users],
+  // Menu order: church content, website pages, inbox, then settings.
+  collections: [Posts, Sermons, Events, Albums, Testimonies, Pages, Messages, Subscribers, Media, Categories, Users],
   globals: [HomePage, AboutPage, GivePage, ContactPage, SiteSettings, Navigation],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
@@ -166,5 +181,7 @@ export default buildConfig({
     importExportPlugin({
       collections: [{ slug: 'subscribers' }, { slug: 'messages' }],
     }),
+    // Keep the admin plain for church staff: no search-engine boxes, no developer "API" tab.
+    simpleAdmin,
   ],
 })

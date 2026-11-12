@@ -5,12 +5,12 @@ import { staff } from '../access'
 /** Messages sent through the website contact form. Created by the site's server action only. */
 export const Messages: CollectionConfig = {
   slug: 'messages',
-  labels: { singular: 'Contact message', plural: 'Contact messages' },
+  labels: { singular: 'Message', plural: 'Messages' },
   admin: {
     useAsTitle: 'subject',
     group: 'Inbox',
     defaultColumns: ['subject', 'name', 'email', 'status', 'createdAt'],
-    description: 'Messages from the contact form. Mark them as replied once someone has answered.',
+    description: 'Messages sent through the website. Reply by email, then set the status to Replied.',
   },
   access: {
     read: staff,

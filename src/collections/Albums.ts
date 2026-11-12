@@ -6,12 +6,12 @@ import { revalidateHooks } from '../hooks/revalidate'
 
 export const Albums: CollectionConfig = {
   slug: 'albums',
-  labels: { singular: 'Gallery album', plural: 'Gallery albums' },
+  labels: { singular: 'Photo album', plural: 'Photo albums' },
   admin: {
     useAsTitle: 'title',
-    group: 'Ministry',
+    group: 'Church content',
     defaultColumns: ['title', 'date', 'order', '_status'],
-    description: 'Photo albums on the Gallery page. Drag photos to change their order.',
+    description: 'Albums on the Gallery page. Add a title and some photos; drag photos to change their order.',
     preview: (doc) => (doc?.slug ? `/next/preview?path=/gallery/${doc.slug}` : null),
   },
   access: { read: publishedOrStaff, create: staff, update: staff, delete: staff },
@@ -20,14 +20,6 @@ export const Albums: CollectionConfig = {
   hooks: revalidateHooks,
   fields: [
     { name: 'title', type: 'text', required: true },
-    { name: 'description', type: 'textarea' },
-    { name: 'date', type: 'date', admin: { date: { pickerAppearance: 'dayOnly' } } },
-    {
-      name: 'cover',
-      type: 'upload',
-      relationTo: 'media',
-      admin: { description: 'Shown on the gallery page. Leave empty to use the first photo.' },
-    },
     {
       name: 'photos',
       type: 'upload',
@@ -36,12 +28,29 @@ export const Albums: CollectionConfig = {
       required: true,
       admin: { isSortable: true },
     },
-    slugField(),
     {
-      name: 'order',
-      type: 'number',
-      defaultValue: 0,
-      admin: { position: 'sidebar', description: 'Lower numbers show first.' },
+      type: 'collapsible',
+      label: 'More details (optional)',
+      admin: { initCollapsed: true },
+      fields: [
+        { name: 'description', type: 'textarea' },
+        { name: 'date', type: 'date', admin: { date: { pickerAppearance: 'dayOnly' } } },
+        {
+          name: 'cover',
+          type: 'upload',
+          relationTo: 'media',
+          label: 'Cover photo',
+          admin: { description: 'Leave empty to use the first photo.' },
+        },
+        {
+          name: 'order',
+          type: 'number',
+          defaultValue: 0,
+          label: 'Position',
+          admin: { description: 'Albums with lower numbers show first.' },
+        },
+      ],
     },
+    slugField(),
   ],
 }

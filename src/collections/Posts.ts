@@ -9,9 +9,9 @@ export const Posts: CollectionConfig = {
   labels: { singular: 'Blog post', plural: 'Blog posts' },
   admin: {
     useAsTitle: 'title',
-    group: 'Blog',
+    group: 'Church content',
     defaultColumns: ['title', 'categories', 'publishedAt', '_status'],
-    description: 'Articles on the COFWO Blog. Save a draft to keep working; publish to put it live.',
+    description: 'Articles on the blog. Your work saves as a draft; press Publish to put it on the website.',
     preview: (doc) => (doc?.slug ? `/next/preview?path=/${doc.slug}` : null),
   },
   access: { read: publishedOrStaff, create: staff, update: staff, delete: staff },
@@ -27,36 +27,28 @@ export const Posts: CollectionConfig = {
   },
   fields: [
     { name: 'title', type: 'text', required: true },
+    { name: 'heroImage', type: 'upload', relationTo: 'media', label: 'Cover photo' },
     {
-      type: 'tabs',
-      tabs: [
-        {
-          label: 'Article',
-          fields: [
-            {
-              name: 'excerpt',
-              type: 'textarea',
-              label: 'Summary',
-              admin: { description: 'One or two sentences shown on blog cards and in search results.' },
-            },
-            { name: 'heroImage', type: 'upload', relationTo: 'media', label: 'Cover photo' },
-            { name: 'content', type: 'richText', required: true },
-          ],
-        },
-      ],
+      name: 'excerpt',
+      type: 'textarea',
+      label: 'Short summary (optional)',
+      admin: { description: 'One or two sentences shown on the blog page.' },
     },
+    { name: 'content', type: 'richText', required: true, label: 'Article' },
     slugField(),
     {
       name: 'publishedAt',
       type: 'date',
       label: 'Publish date',
-      admin: { position: 'sidebar', date: { pickerAppearance: 'dayAndTime' } },
+      // Filled in automatically when the post is first published.
+      admin: { hidden: true },
     },
     {
       name: 'categories',
       type: 'relationship',
       relationTo: 'categories',
       hasMany: true,
+      label: 'Categories (optional)',
       admin: { position: 'sidebar' },
     },
     {

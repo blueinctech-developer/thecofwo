@@ -31,15 +31,15 @@ export interface Config {
   blocks: {};
   collections: {
     posts: Post;
-    categories: Category;
-    pages: Page;
     sermons: Sermon;
     events: Event;
-    testimonies: Testimony;
     albums: Album;
-    media: Media;
+    testimonies: Testimony;
+    pages: Page;
     messages: Message;
     subscribers: Subscriber;
+    media: Media;
+    categories: Category;
     users: User;
     exports: Export;
     imports: Import;
@@ -52,15 +52,15 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     posts: PostsSelect<false> | PostsSelect<true>;
-    categories: CategoriesSelect<false> | CategoriesSelect<true>;
-    pages: PagesSelect<false> | PagesSelect<true>;
     sermons: SermonsSelect<false> | SermonsSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
-    testimonies: TestimoniesSelect<false> | TestimoniesSelect<true>;
     albums: AlbumsSelect<false> | AlbumsSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
+    testimonies: TestimoniesSelect<false> | TestimoniesSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
     messages: MessagesSelect<false> | MessagesSelect<true>;
     subscribers: SubscribersSelect<false> | SubscribersSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
+    categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     exports: ExportsSelect<false> | ExportsSelect<true>;
     imports: ImportsSelect<false> | ImportsSelect<true>;
@@ -126,7 +126,7 @@ export interface UserAuthOperations {
   };
 }
 /**
- * Articles on the COFWO Blog. Save a draft to keep working; publish to put it live.
+ * Articles on the blog. Your work saves as a draft; press Publish to put it on the website.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "posts".
@@ -134,11 +134,11 @@ export interface UserAuthOperations {
 export interface Post {
   id: number;
   title: string;
+  heroImage?: (number | null) | Media;
   /**
-   * One or two sentences shown on blog cards and in search results.
+   * One or two sentences shown on the blog page.
    */
   excerpt?: string | null;
-  heroImage?: (number | null) | Media;
   content: {
     root: {
       type: string;
@@ -154,9 +154,6 @@ export interface Post {
     };
     [k: string]: unknown;
   };
-  /**
-   * The last part of the page address. Leave empty to create it from the title.
-   */
   slug?: string | null;
   publishedAt?: string | null;
   categories?: (number | Category)[] | null;
@@ -175,7 +172,7 @@ export interface Post {
   _status?: ('draft' | 'published') | null;
 }
 /**
- * All photos and files used on the website.
+ * Every photo on the website. You can also upload photos straight from any page you are editing.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
@@ -183,9 +180,9 @@ export interface Post {
 export interface Media {
   id: number;
   /**
-   * Describe what is in the photo for people using screen readers, e.g. "Congregation worshipping with raised hands".
+   * Helps blind visitors and search engines, e.g. "Congregation worshipping". If left empty, the file name is used.
    */
-  alt: string;
+  alt?: string | null;
   caption?: string | null;
   prefix?: string | null;
   _objectKey?: string | null;
@@ -243,59 +240,12 @@ export interface Category {
   id: number;
   title: string;
   description?: string | null;
-  /**
-   * The last part of the page address. Leave empty to create it from the title.
-   */
   slug?: string | null;
   updatedAt: string;
   createdAt: string;
 }
 /**
- * Extra pages such as the privacy policy. Each page is shown at thecofwo.org/<web address>.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "pages".
- */
-export interface Page {
-  id: number;
-  title: string;
-  eyebrow?: string | null;
-  intro?: string | null;
-  heroImage?: (number | null) | Media;
-  content?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  /**
-   * The last part of the page address. Leave empty to create it from the title.
-   */
-  slug?: string | null;
-  showInFooter?: boolean | null;
-  meta?: {
-    title?: string | null;
-    description?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-  };
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * Messages people can watch or listen to on the Sermons page. Paste a YouTube, Facebook or Vimeo link; the video plays on the website.
+ * Paste a YouTube, Facebook or Vimeo link and the video plays on the Sermons page.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "sermons".
@@ -310,6 +260,10 @@ export interface Sermon {
    */
   videoUrl?: string | null;
   /**
+   * One or two sentences about the message.
+   */
+  summary?: string | null;
+  /**
    * A direct link to an MP3, if you have one.
    */
   audioUrl?: string | null;
@@ -319,10 +273,6 @@ export interface Sermon {
    * Optional. YouTube videos use their own thumbnail when this is empty.
    */
   thumbnail?: (number | null) | Media;
-  /**
-   * One or two sentences about the message.
-   */
-  summary?: string | null;
   notes?: {
     root: {
       type: string;
@@ -338,9 +288,6 @@ export interface Sermon {
     };
     [k: string]: unknown;
   } | null;
-  /**
-   * The last part of the page address. Leave empty to create it from the title.
-   */
   slug?: string | null;
   meta?: {
     title?: string | null;
@@ -355,7 +302,7 @@ export interface Sermon {
   _status?: ('draft' | 'published') | null;
 }
 /**
- * Services, conferences and gatherings. Upcoming events appear on the homepage and the Events page.
+ * Upcoming events show on the homepage and the Events page, and drop off once they are over.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "events".
@@ -394,9 +341,6 @@ export interface Event {
    * Registration or livestream link (optional).
    */
   ctaUrl?: string | null;
-  /**
-   * The last part of the page address. Leave empty to create it from the title.
-   */
   slug?: string | null;
   featured?: boolean | null;
   meta?: {
@@ -407,6 +351,31 @@ export interface Event {
      */
     image?: (number | null) | Media;
   };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * Albums on the Gallery page. Add a title and some photos; drag photos to change their order.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "albums".
+ */
+export interface Album {
+  id: number;
+  title: string;
+  photos: (number | Media)[];
+  description?: string | null;
+  date?: string | null;
+  /**
+   * Leave empty to use the first photo.
+   */
+  cover?: (number | null) | Media;
+  /**
+   * Albums with lower numbers show first.
+   */
+  order?: number | null;
+  slug?: string | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -436,35 +405,48 @@ export interface Testimony {
   createdAt: string;
 }
 /**
- * Photo albums on the Gallery page. Drag photos to change their order.
+ * Extra pages such as a privacy policy. Tick "Link in footer" to link to one from every page.
  *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "albums".
+ * via the `definition` "pages".
  */
-export interface Album {
+export interface Page {
   id: number;
   title: string;
-  description?: string | null;
-  date?: string | null;
-  /**
-   * Shown on the gallery page. Leave empty to use the first photo.
-   */
-  cover?: (number | null) | Media;
-  photos: (number | Media)[];
-  /**
-   * The last part of the page address. Leave empty to create it from the title.
-   */
+  intro?: string | null;
+  heroImage?: (number | null) | Media;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  eyebrow?: string | null;
   slug?: string | null;
-  /**
-   * Lower numbers show first.
-   */
-  order?: number | null;
+  showInFooter?: boolean | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
 }
 /**
- * Messages from the contact form. Mark them as replied once someone has answered.
+ * Messages sent through the website. Reply by email, then set the status to Replied.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "messages".
@@ -482,7 +464,7 @@ export interface Message {
   createdAt: string;
 }
 /**
- * People who signed up to the newsletter. Use Export to download them as a spreadsheet.
+ * People who signed up for news. Use Export to download the list.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "subscribers".
@@ -497,7 +479,7 @@ export interface Subscriber {
   createdAt: string;
 }
 /**
- * People who can sign in to this admin. Admins can manage everything; editors can manage content.
+ * People who can sign in here. Editors can change content; admins can also add team members.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
@@ -721,14 +703,6 @@ export interface PayloadLockedDocument {
         value: number | Post;
       } | null)
     | ({
-        relationTo: 'categories';
-        value: number | Category;
-      } | null)
-    | ({
-        relationTo: 'pages';
-        value: number | Page;
-      } | null)
-    | ({
         relationTo: 'sermons';
         value: number | Sermon;
       } | null)
@@ -737,16 +711,16 @@ export interface PayloadLockedDocument {
         value: number | Event;
       } | null)
     | ({
-        relationTo: 'testimonies';
-        value: number | Testimony;
-      } | null)
-    | ({
         relationTo: 'albums';
         value: number | Album;
       } | null)
     | ({
-        relationTo: 'media';
-        value: number | Media;
+        relationTo: 'testimonies';
+        value: number | Testimony;
+      } | null)
+    | ({
+        relationTo: 'pages';
+        value: number | Page;
       } | null)
     | ({
         relationTo: 'messages';
@@ -755,6 +729,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'subscribers';
         value: number | Subscriber;
+      } | null)
+    | ({
+        relationTo: 'media';
+        value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'categories';
+        value: number | Category;
       } | null)
     | ({
         relationTo: 'users';
@@ -808,48 +790,14 @@ export interface PayloadMigration {
  */
 export interface PostsSelect<T extends boolean = true> {
   title?: T;
-  excerpt?: T;
   heroImage?: T;
+  excerpt?: T;
   content?: T;
   slug?: T;
   publishedAt?: T;
   categories?: T;
   authorName?: T;
   featured?: T;
-  meta?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-        image?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "categories_select".
- */
-export interface CategoriesSelect<T extends boolean = true> {
-  title?: T;
-  description?: T;
-  slug?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "pages_select".
- */
-export interface PagesSelect<T extends boolean = true> {
-  title?: T;
-  eyebrow?: T;
-  intro?: T;
-  heroImage?: T;
-  content?: T;
-  slug?: T;
-  showInFooter?: T;
   meta?:
     | T
     | {
@@ -870,11 +818,11 @@ export interface SermonsSelect<T extends boolean = true> {
   speaker?: T;
   date?: T;
   videoUrl?: T;
+  summary?: T;
   audioUrl?: T;
   series?: T;
   scripture?: T;
   thumbnail?: T;
-  summary?: T;
   notes?: T;
   slug?: T;
   meta?:
@@ -920,6 +868,22 @@ export interface EventsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "albums_select".
+ */
+export interface AlbumsSelect<T extends boolean = true> {
+  title?: T;
+  photos?: T;
+  description?: T;
+  date?: T;
+  cover?: T;
+  order?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "testimonies_select".
  */
 export interface TestimoniesSelect<T extends boolean = true> {
@@ -935,19 +899,53 @@ export interface TestimoniesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "albums_select".
+ * via the `definition` "pages_select".
  */
-export interface AlbumsSelect<T extends boolean = true> {
+export interface PagesSelect<T extends boolean = true> {
   title?: T;
-  description?: T;
-  date?: T;
-  cover?: T;
-  photos?: T;
+  intro?: T;
+  heroImage?: T;
+  content?: T;
+  eyebrow?: T;
   slug?: T;
-  order?: T;
+  showInFooter?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "messages_select".
+ */
+export interface MessagesSelect<T extends boolean = true> {
+  name?: T;
+  email?: T;
+  phone?: T;
+  subject?: T;
+  message?: T;
+  status?: T;
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscribers_select".
+ */
+export interface SubscribersSelect<T extends boolean = true> {
+  email?: T;
+  name?: T;
+  status?: T;
+  source?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1016,28 +1014,12 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "messages_select".
+ * via the `definition` "categories_select".
  */
-export interface MessagesSelect<T extends boolean = true> {
-  name?: T;
-  email?: T;
-  phone?: T;
-  subject?: T;
-  message?: T;
-  status?: T;
-  notes?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "subscribers_select".
- */
-export interface SubscribersSelect<T extends boolean = true> {
-  email?: T;
-  name?: T;
-  status?: T;
-  source?: T;
+export interface CategoriesSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  slug?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1212,9 +1194,6 @@ export interface HomePage {
     highlight?: string | null;
     subheading?: string | null;
     image?: (number | null) | Media;
-    /**
-     * A direct link to a short .mp4 clip. It plays muted behind the heading.
-     */
     videoUrl?: string | null;
     primary?: {
       label?: string | null;
@@ -1396,9 +1375,6 @@ export interface HomePage {
       newTab?: boolean | null;
     };
   };
-  /**
-   * Optional. Leave empty to use the defaults from Site settings.
-   */
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -1416,10 +1392,10 @@ export interface HomePage {
 export interface AboutPage {
   id: number;
   banner: {
-    eyebrow?: string | null;
     title: string;
     intro?: string | null;
     image?: (number | null) | Media;
+    eyebrow?: string | null;
   };
   story?: {
     eyebrow?: string | null;
@@ -1496,9 +1472,6 @@ export interface AboutPage {
     heading?: string | null;
     images?: (number | Media)[] | null;
   };
-  /**
-   * Optional. Leave empty to use the defaults from Site settings.
-   */
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -1516,10 +1489,10 @@ export interface AboutPage {
 export interface GivePage {
   id: number;
   banner: {
-    eyebrow?: string | null;
     title: string;
     intro?: string | null;
     image?: (number | null) | Media;
+    eyebrow?: string | null;
   };
   intro?: {
     eyebrow?: string | null;
@@ -1567,9 +1540,6 @@ export interface GivePage {
     text?: string | null;
     reference?: string | null;
   };
-  /**
-   * Optional. Leave empty to use the defaults from Site settings.
-   */
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -1587,10 +1557,10 @@ export interface GivePage {
 export interface ContactPage {
   id: number;
   banner: {
-    eyebrow?: string | null;
     title: string;
     intro?: string | null;
     image?: (number | null) | Media;
+    eyebrow?: string | null;
   };
   formHeading?: string | null;
   formIntro?: string | null;
@@ -1618,9 +1588,6 @@ export interface ContactPage {
         id?: string | null;
       }[]
     | null;
-  /**
-   * Optional. Leave empty to use the defaults from Site settings.
-   */
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -1630,21 +1597,13 @@ export interface ContactPage {
   createdAt?: string | null;
 }
 /**
- * Ministry details used across the whole website.
+ * Contact details, service times and links used all over the website.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings".
  */
 export interface SiteSetting {
   id: number;
-  siteName: string;
-  shortName?: string | null;
-  tagline?: string | null;
-  /**
-   * Usually the white version of the logo.
-   */
-  logoLight?: (number | null) | Media;
-  logoDark?: (number | null) | Media;
   email?: string | null;
   /**
    * Leave empty to hide.
@@ -1658,15 +1617,6 @@ export interface SiteSetting {
    * A Google Maps link (optional).
    */
   mapUrl?: string | null;
-  /**
-   * Include the country code. Leave empty to hide the button.
-   */
-  whatsappNumber?: string | null;
-  whatsappEnabled?: boolean | null;
-  /**
-   * The text that appears in the chat when someone taps the button. They can change it before sending.
-   */
-  whatsappMessage?: string | null;
   /**
    * Shown on the homepage, the Contact page and the footer. Leave empty to hide.
    */
@@ -1693,6 +1643,15 @@ export interface SiteSetting {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Include the country code. Leave empty to hide the button.
+   */
+  whatsappNumber?: string | null;
+  whatsappEnabled?: boolean | null;
+  /**
+   * The text that appears in the chat when someone taps the button. They can change it before sending.
+   */
+  whatsappMessage?: string | null;
   pillarsHeading?: string | null;
   pillars?:
     | {
@@ -1702,7 +1661,6 @@ export interface SiteSetting {
         id?: string | null;
       }[]
     | null;
-  ticker?: string | null;
   announcementOn?: boolean | null;
   announcementText?: string | null;
   announcementLink?: {
@@ -1714,20 +1672,23 @@ export interface SiteSetting {
     newTab?: boolean | null;
   };
   /**
-   * New contact messages and signups are emailed here (needs email set up on Vercel).
+   * New messages and newsletter signups are emailed to this address.
    */
   notifyEmail?: string | null;
-  newsletterHeading?: string | null;
-  newsletterText?: string | null;
-  contactSuccess?: string | null;
+  siteName: string;
+  shortName?: string | null;
+  tagline?: string | null;
+  logoLight?: (number | null) | Media;
+  logoDark?: (number | null) | Media;
   seoTitle?: string | null;
   seoDescription?: string | null;
-  /**
-   * Shown when a page is shared on social media. 1200×630 works best.
-   */
   ogImage?: (number | null) | Media;
   footerBlurb?: string | null;
   copyrightName?: string | null;
+  newsletterHeading?: string | null;
+  newsletterText?: string | null;
+  contactSuccess?: string | null;
+  ticker?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1966,10 +1927,10 @@ export interface AboutPageSelect<T extends boolean = true> {
   banner?:
     | T
     | {
-        eyebrow?: T;
         title?: T;
         intro?: T;
         image?: T;
+        eyebrow?: T;
       };
   story?:
     | T
@@ -2036,10 +1997,10 @@ export interface GivePageSelect<T extends boolean = true> {
   banner?:
     | T
     | {
-        eyebrow?: T;
         title?: T;
         intro?: T;
         image?: T;
+        eyebrow?: T;
       };
   intro?:
     | T
@@ -2089,10 +2050,10 @@ export interface ContactPageSelect<T extends boolean = true> {
   banner?:
     | T
     | {
-        eyebrow?: T;
         title?: T;
         intro?: T;
         image?: T;
+        eyebrow?: T;
       };
   formHeading?: T;
   formIntro?: T;
@@ -2132,18 +2093,10 @@ export interface ContactPageSelect<T extends boolean = true> {
  * via the `definition` "site-settings_select".
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
-  siteName?: T;
-  shortName?: T;
-  tagline?: T;
-  logoLight?: T;
-  logoDark?: T;
   email?: T;
   phone?: T;
   address?: T;
   mapUrl?: T;
-  whatsappNumber?: T;
-  whatsappEnabled?: T;
-  whatsappMessage?: T;
   serviceTimes?:
     | T
     | {
@@ -2161,6 +2114,9 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         url?: T;
         id?: T;
       };
+  whatsappNumber?: T;
+  whatsappEnabled?: T;
+  whatsappMessage?: T;
   pillarsHeading?: T;
   pillars?:
     | T
@@ -2170,7 +2126,6 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         body?: T;
         id?: T;
       };
-  ticker?: T;
   announcementOn?: T;
   announcementText?: T;
   announcementLink?:
@@ -2181,14 +2136,20 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         newTab?: T;
       };
   notifyEmail?: T;
-  newsletterHeading?: T;
-  newsletterText?: T;
-  contactSuccess?: T;
+  siteName?: T;
+  shortName?: T;
+  tagline?: T;
+  logoLight?: T;
+  logoDark?: T;
   seoTitle?: T;
   seoDescription?: T;
   ogImage?: T;
   footerBlurb?: T;
   copyrightName?: T;
+  newsletterHeading?: T;
+  newsletterText?: T;
+  contactSuccess?: T;
+  ticker?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -2253,15 +2214,15 @@ export interface TaskCreateCollectionExport {
     batchSize?: number | null;
     collectionSlug:
       | 'posts'
-      | 'categories'
-      | 'pages'
       | 'sermons'
       | 'events'
-      | 'testimonies'
       | 'albums'
-      | 'media'
+      | 'testimonies'
+      | 'pages'
       | 'messages'
       | 'subscribers'
+      | 'media'
+      | 'categories'
       | 'users'
       | 'exports'
       | 'imports';

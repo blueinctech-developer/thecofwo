@@ -7,7 +7,7 @@ export const Testimonies: CollectionConfig = {
   slug: 'testimonies',
   admin: {
     useAsTitle: 'name',
-    group: 'Ministry',
+    group: 'Church content',
     defaultColumns: ['name', 'type', 'show', 'order'],
     description: 'Testimonies shown on the homepage. Only those with "Show on website" ticked appear.',
   },
@@ -41,6 +41,7 @@ export const Testimonies: CollectionConfig = {
       name: 'order',
       type: 'number',
       defaultValue: 0,
+      label: 'Position',
       admin: { position: 'sidebar', description: 'Lower numbers show first.' },
     },
   ],

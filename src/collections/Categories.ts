@@ -6,7 +6,8 @@ import { revalidateHooks } from '../hooks/revalidate'
 
 export const Categories: CollectionConfig = {
   slug: 'categories',
-  admin: { useAsTitle: 'title', group: 'Blog' },
+  labels: { singular: 'Blog category', plural: 'Blog categories' },
+  admin: { useAsTitle: 'title', group: 'Settings' },
   access: { read: anyone, create: staff, update: staff, delete: staff },
   hooks: revalidateHooks,
   fields: [

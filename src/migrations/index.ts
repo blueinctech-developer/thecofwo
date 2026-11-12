@@ -4,6 +4,7 @@ import * as migration_20261109_154044_home_connect_card from './20261109_154044_
 import * as migration_20261109_164657_whatsapp_button from './20261109_164657_whatsapp_button';
 import * as migration_20261110_082327_hero_slides from './20261110_082327_hero_slides';
 import * as migration_20261110_132622_media_storage_fields from './20261110_132622_media_storage_fields';
+import * as migration_20261112_100500_optional_photo_description from './20261112_100500_optional_photo_description';
 
 export const migrations = [
   {
@@ -34,6 +35,11 @@ export const migrations = [
   {
     up: migration_20261110_132622_media_storage_fields.up,
     down: migration_20261110_132622_media_storage_fields.down,
-    name: '20261110_132622_media_storage_fields'
+    name: '20261110_132622_media_storage_fields',
+  },
+  {
+    up: migration_20261112_100500_optional_photo_description.up,
+    down: migration_20261112_100500_optional_photo_description.down,
+    name: '20261112_100500_optional_photo_description'
   },
 ];

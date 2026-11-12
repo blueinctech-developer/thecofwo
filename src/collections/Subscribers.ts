@@ -5,12 +5,12 @@ import { staff } from '../access'
 /** Newsletter signups from the website footer. */
 export const Subscribers: CollectionConfig = {
   slug: 'subscribers',
-  labels: { singular: 'Newsletter subscriber', plural: 'Newsletter subscribers' },
+  labels: { singular: 'Newsletter signup', plural: 'Newsletter signups' },
   admin: {
     useAsTitle: 'email',
     group: 'Inbox',
     defaultColumns: ['email', 'name', 'status', 'createdAt'],
-    description: 'People who signed up to the newsletter. Use Export to download them as a spreadsheet.',
+    description: 'People who signed up for news. Use Export to download the list.',
   },
   access: {
     read: staff,
@@ -31,6 +31,6 @@ export const Subscribers: CollectionConfig = {
         { label: 'Unsubscribed', value: 'unsubscribed' },
       ],
     },
-    { name: 'source', type: 'text', admin: { readOnly: true, position: 'sidebar' } },
+    { name: 'source', type: 'text', admin: { readOnly: true, hidden: true } },
   ],
 }

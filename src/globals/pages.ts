@@ -20,10 +20,10 @@ const banner = (defaults: { title: string; intro?: string }): Field => ({
   type: 'group',
   label: 'Page banner',
   fields: [
-    { name: 'eyebrow', type: 'text', label: 'Small heading' },
     { name: 'title', type: 'text', required: true, defaultValue: defaults.title },
     { name: 'intro', type: 'textarea', defaultValue: defaults.intro },
     { name: 'image', type: 'upload', relationTo: 'media', label: 'Background photo' },
+    { name: 'eyebrow', type: 'text', label: 'Small heading', admin: { hidden: true } },
   ],
 })
 
@@ -38,11 +38,12 @@ const section = (name: string, label: string, extra: Field[] = []): Field => ({
   ],
 })
 
+// Search-engine overrides. Hidden: the site builds these from each page's own title and text.
 const seo: Field = {
   name: 'meta',
   label: 'Search & sharing',
   type: 'group',
-  admin: { description: 'Optional. Leave empty to use the defaults from Site settings.' },
+  admin: { hidden: true },
   fields: [
     { name: 'title', type: 'text' },
     { name: 'description', type: 'textarea' },
@@ -55,7 +56,7 @@ export const HomePage = pageGlobal('home-page', 'Homepage', 'The sections of the
     type: 'tabs',
     tabs: [
       {
-        label: 'Hero',
+        label: 'Top of page',
         fields: [
           {
             name: 'hero',
@@ -76,7 +77,7 @@ export const HomePage = pageGlobal('home-page', 'Homepage', 'The sections of the
                 name: 'videoUrl',
                 type: 'text',
                 label: 'Background video (optional)',
-                admin: { description: 'A direct link to a short .mp4 clip. It plays muted behind the heading.' },
+                admin: { hidden: true },
               },
               linkGroup('primary', 'Main button'),
               // No longer shown on the site; hidden so staff are not confused.
@@ -149,7 +150,7 @@ export const HomePage = pageGlobal('home-page', 'Homepage', 'The sections of the
       },
       {
         label: 'Join us',
-        description: 'Service times and the address come from Site settings → Contact & services.',
+        description: 'Service times and the address come from Church details.',
         fields: [
           section('visit', 'Join us', [
             { name: 'body', type: 'textarea' },
@@ -164,7 +165,8 @@ export const HomePage = pageGlobal('home-page', 'Homepage', 'The sections of the
         ],
       },
       {
-        label: 'Other sections',
+        label: 'Section headings',
+        description: 'The small headings above the sermons, testimonies, events, blog and gallery parts of the homepage.',
         fields: [
           section('sermonsSection', 'Latest message', [
             {
@@ -192,9 +194,9 @@ export const HomePage = pageGlobal('home-page', 'Homepage', 'The sections of the
           ]),
         ],
       },
-      { label: 'Search & sharing', fields: [seo] },
     ],
   },
+  seo,
 ])
 
 export const AboutPage = pageGlobal('about-page', 'About page', 'The About Us page.', [

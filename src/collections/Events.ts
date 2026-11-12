@@ -8,9 +8,9 @@ export const Events: CollectionConfig = {
   slug: 'events',
   admin: {
     useAsTitle: 'title',
-    group: 'Ministry',
+    group: 'Church content',
     defaultColumns: ['title', 'startDate', 'location', '_status'],
-    description: 'Services, conferences and gatherings. Upcoming events appear on the homepage and the Events page.',
+    description: 'Upcoming events show on the homepage and the Events page, and drop off once they are over.',
     preview: (doc) => (doc?.slug ? `/next/preview?path=/events/${doc.slug}` : null),
   },
   access: { read: publishedOrStaff, create: staff, update: staff, delete: staff },
@@ -60,14 +60,21 @@ export const Events: CollectionConfig = {
     { name: 'image', type: 'upload', relationTo: 'media' },
     { name: 'details', type: 'richText' },
     {
-      type: 'row',
+      type: 'collapsible',
+      label: 'Registration button (optional)',
+      admin: { initCollapsed: true },
       fields: [
-        { name: 'ctaLabel', type: 'text', label: 'Button text', defaultValue: 'Register', admin: { width: '40%' } },
         {
-          name: 'ctaUrl',
-          type: 'text',
-          label: 'Button link',
-          admin: { width: '60%', description: 'Registration or livestream link (optional).' },
+          type: 'row',
+          fields: [
+            { name: 'ctaLabel', type: 'text', label: 'Button text', defaultValue: 'Register', admin: { width: '40%' } },
+            {
+              name: 'ctaUrl',
+              type: 'text',
+              label: 'Button link',
+              admin: { width: '60%', description: 'Registration or livestream link (optional).' },
+            },
+          ],
         },
       ],
     },

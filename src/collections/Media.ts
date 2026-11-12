@@ -5,11 +5,11 @@ import { revalidateHooks } from '../hooks/revalidate'
 
 export const Media: CollectionConfig = {
   slug: 'media',
-  labels: { singular: 'Photo or file', plural: 'Media library' },
+  labels: { singular: 'Photo', plural: 'Photo library' },
   admin: {
-    group: 'Content',
+    group: 'Settings',
     defaultColumns: ['filename', 'alt', 'updatedAt'],
-    description: 'All photos and files used on the website.',
+    description: 'Every photo on the website. You can also upload photos straight from any page you are editing.',
   },
   access: {
     read: anyone,
@@ -22,13 +22,23 @@ export const Media: CollectionConfig = {
     {
       name: 'alt',
       type: 'text',
-      required: true,
-      label: 'Description (alt text)',
+      label: 'What is in the photo? (optional)',
       admin: {
-        description: 'Describe what is in the photo for people using screen readers, e.g. "Congregation worshipping with raised hands".',
+        description: 'Helps blind visitors and search engines, e.g. "Congregation worshipping". If left empty, the file name is used.',
+      },
+      hooks: {
+        beforeChange: [
+          ({ value, data }) =>
+            typeof value === 'string' && value.trim()
+              ? value
+              : String(data?.filename ?? '')
+                  .replace(/\.[a-z0-9]+$/i, '')
+                  .replace(/[-_]+/g, ' ')
+                  .trim(),
+        ],
       },
     },
-    { name: 'caption', type: 'text' },
+    { name: 'caption', type: 'text', admin: { hidden: true } },
   ],
   upload: {
     mimeTypes: ['image/*', 'application/pdf'],

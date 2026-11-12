@@ -8,8 +8,8 @@ export const Users: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'email', 'roles'],
-    group: 'Admin',
-    description: 'People who can sign in to this admin. Admins can manage everything; editors can manage content.',
+    group: 'Settings',
+    description: 'People who can sign in here. Editors can change content; admins can also add team members.',
   },
   auth: {
     maxLoginAttempts: 5,

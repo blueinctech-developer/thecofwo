@@ -9,10 +9,10 @@ export const Sermons: CollectionConfig = {
   labels: { singular: 'Sermon', plural: 'Sermons' },
   admin: {
     useAsTitle: 'title',
-    group: 'Ministry',
+    group: 'Church content',
     defaultColumns: ['title', 'speaker', 'date', '_status'],
     description:
-      'Messages people can watch or listen to on the Sermons page. Paste a YouTube, Facebook or Vimeo link; the video plays on the website.',
+      'Paste a YouTube, Facebook or Vimeo link and the video plays on the Sermons page.',
     preview: (doc) => (doc?.slug ? `/next/preview?path=/sermons/${doc.slug}` : null),
   },
   access: { read: publishedOrStaff, create: staff, update: staff, delete: staff },
@@ -42,27 +42,34 @@ export const Sermons: CollectionConfig = {
       validate: (v: string | null | undefined) =>
         !v || /^https?:\/\//.test(v) ? true : 'Please paste the full link, starting with https://',
     },
+    { name: 'summary', type: 'textarea', admin: { description: 'One or two sentences about the message.' } },
     {
-      name: 'audioUrl',
-      type: 'text',
-      label: 'Audio link (optional)',
-      admin: { description: 'A direct link to an MP3, if you have one.' },
-    },
-    {
-      type: 'row',
+      type: 'collapsible',
+      label: 'More details (optional)',
+      admin: { initCollapsed: true },
       fields: [
-        { name: 'series', type: 'text', admin: { width: '50%' } },
-        { name: 'scripture', type: 'text', label: 'Bible passage', admin: { width: '50%', placeholder: 'e.g. Isaiah 60:1-3' } },
+        {
+          name: 'audioUrl',
+          type: 'text',
+          label: 'Audio link (optional)',
+          admin: { description: 'A direct link to an MP3, if you have one.' },
+        },
+        {
+          type: 'row',
+          fields: [
+            { name: 'series', type: 'text', admin: { width: '50%' } },
+            { name: 'scripture', type: 'text', label: 'Bible passage', admin: { width: '50%', placeholder: 'e.g. Isaiah 60:1-3' } },
+          ],
+        },
+        {
+          name: 'thumbnail',
+          type: 'upload',
+          relationTo: 'media',
+          admin: { description: 'Optional. YouTube videos use their own thumbnail when this is empty.' },
+        },
+        { name: 'notes', type: 'richText', label: 'Notes or outline (optional)' },
       ],
     },
-    {
-      name: 'thumbnail',
-      type: 'upload',
-      relationTo: 'media',
-      admin: { description: 'Optional. YouTube videos use their own thumbnail when this is empty.' },
-    },
-    { name: 'summary', type: 'textarea', admin: { description: 'One or two sentences about the message.' } },
-    { name: 'notes', type: 'richText', label: 'Notes or outline (optional)' },
     slugField(),
   ],
 }
