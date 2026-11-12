@@ -1,10 +1,12 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
-import { resendAdapter } from '@payloadcms/email-resend'
+import { SendEmailCommand, SESv2Client } from '@aws-sdk/client-sesv2'
+import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import { importExportPlugin } from '@payloadcms/plugin-import-export'
 import { seoPlugin } from '@payloadcms/plugin-seo'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { s3Storage } from '@payloadcms/storage-s3'
 import path from 'path'
+import nodemailer from 'nodemailer'
 import { buildConfig } from 'payload'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
@@ -39,6 +41,14 @@ const s3 = {
   secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || process.env.AWS_SECRET_ACCESS_KEY || '',
 }
 const s3Enabled = Boolean(s3.endpoint && s3.bucket && s3.accessKeyId && s3.secretAccessKey)
+// Email goes through Amazon SES with an IAM access key (needs the ses:SendEmail permission).
+// Vercel reserves the AWS_* names, so these use SES_*.
+const ses = {
+  region: process.env.SES_REGION || 'us-east-1',
+  accessKeyId: process.env.SES_ACCESS_KEY_ID || '',
+  secretAccessKey: process.env.SES_SECRET_ACCESS_KEY || '',
+}
+const sesEnabled = Boolean(ses.accessKeyId && ses.secretAccessKey)
 const serverUrl =
   process.env.NEXT_PUBLIC_SERVER_URL ||
   (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : '') ||
@@ -109,11 +119,21 @@ export default buildConfig({
     // Local dev keeps the schema in sync automatically; production uses migrations.
     push: process.env.NODE_ENV !== 'production' && !process.env.VERCEL,
   }),
-  email: process.env.RESEND_API_KEY
-    ? resendAdapter({
-        apiKey: process.env.RESEND_API_KEY,
+  // Without the SES keys no email is sent (Payload logs it to the console instead).
+  email: sesEnabled
+    ? nodemailerAdapter({
         defaultFromAddress: process.env.EMAIL_FROM_ADDRESS || 'no-reply@thecofwo.org',
         defaultFromName: process.env.EMAIL_FROM_NAME || 'COFWO Website',
+        skipVerify: true,
+        transport: nodemailer.createTransport({
+          SES: {
+            sesClient: new SESv2Client({
+              region: ses.region,
+              credentials: { accessKeyId: ses.accessKeyId, secretAccessKey: ses.secretAccessKey },
+            }),
+            SendEmailCommand,
+          },
+        }),
       })
     : undefined,
   plugins: [

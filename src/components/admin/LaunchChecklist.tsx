@@ -71,9 +71,9 @@ export const LaunchChecklist = async ({ payload }: ServerProps) => {
         optional: true,
       },
       {
-        done: Boolean(process.env.RESEND_API_KEY),
+        done: Boolean(process.env.SES_ACCESS_KEY_ID && process.env.SES_SECRET_ACCESS_KEY),
         title: 'Turn on email alerts',
-        why: 'Get an email for each new contact message. Needs a Resend key added on Vercel (see docs/DEPLOYMENT.md).',
+        why: 'Get an email for each new contact message. Needs the Amazon SES access keys added on Vercel (see docs/DEPLOYMENT.md).',
         href: '/admin/globals/site-settings',
         optional: true,
       },

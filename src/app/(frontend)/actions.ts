@@ -33,7 +33,7 @@ const escape = (s: string) =>
 
 async function notify(subject: string, rows: [string, string][], replyTo?: string) {
   const payload = await getPayloadClient()
-  if (!process.env.RESEND_API_KEY) return
+  if (!process.env.SES_ACCESS_KEY_ID || !process.env.SES_SECRET_ACCESS_KEY) return
   try {
     const settings = await payload.findGlobal({ slug: 'site-settings' })
     const to = settings.notifyEmail || settings.email

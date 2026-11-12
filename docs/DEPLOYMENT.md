@@ -30,10 +30,13 @@ In **Settings → Environment Variables**, add (all environments unless noted):
 | `S3_SECRET_ACCESS_KEY` | The credential's secret (starts `nsk_live_`). |
 | `SITE_TIMEZONE` | The ministry's timezone, e.g. `Africa/Lagos` (the default) or `Europe/London`. Dates and event times are shown in this zone. |
 | `NEXT_PUBLIC_SERVER_URL` | `https://thecofwo.org` for Production once the domain is connected. Until then leave it unset (the Vercel URL is used). |
-| `RESEND_API_KEY` | Optional. Enables email alerts for new messages and signups. |
-| `EMAIL_FROM_ADDRESS` | Optional. A sender on a domain verified in Resend, e.g. `no-reply@thecofwo.org`. |
+| `SES_REGION` | Optional (email). The AWS region your SES is set up in, e.g. `us-east-1` (the default). |
+| `SES_ACCESS_KEY_ID` | Optional (email). An IAM access key ID with the `ses:SendEmail` permission. |
+| `SES_SECRET_ACCESS_KEY` | Optional (email). That key's secret. |
+| `EMAIL_FROM_ADDRESS` | Optional. A sender on a domain verified in SES, e.g. `no-reply@thecofwo.org`. |
+| `EMAIL_FROM_NAME` | Optional. Defaults to `COFWO Website`. |
 
-Vercel reserves the `AWS_*` names, which is why the bucket settings use `S3_*`.
+Vercel reserves the `AWS_*` names, which is why the bucket settings use `S3_*` and the email settings use `SES_*`.
 
 Photos are limited to about 4 MB per upload on Vercel (its request size limit). Resize larger photos before uploading.
 
@@ -83,6 +86,6 @@ Commit the new file in `src/migrations/`. Vercel applies it on the next deploy.
 
 ## Optional extras
 
-- **Email alerts:** add `RESEND_API_KEY`, then set the recipient in *Admin → Site settings → Forms & email*.
+- **Email alerts (Amazon SES):** verify `thecofwo.org` in SES (add the DKIM records it gives you to the domain's DNS), request production access so SES can email any address (new accounts start in a "sandbox" that only sends to verified addresses), add the `SES_*` variables above, redeploy, then set the recipient in *Admin → Site settings → Forms & email*.
 - **Analytics:** enable Vercel Web Analytics in the project dashboard (no cookie banner needed).
 - **Backups:** Neon keeps point-in-time history for the database; bucket files are kept until deleted in the admin.
